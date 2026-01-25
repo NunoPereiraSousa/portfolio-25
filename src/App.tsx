@@ -8,7 +8,7 @@ import Hike from "./assets/images/hike.png";
 import { ExpandableResume } from "./components/resume/ExpandableResume";
 import { BasicResumeItem } from "./components/resume/BasicResumeItem";
 import { ResumeItemText } from "./components/resume/ResumeItemText";
-import { FooterMarkBulge } from "./components/FooterMarkWebGL";
+// import { FooterMarkBulge } from "./components/FooterMarkWebGL";
 import { WireGlobeR3F } from "./components/Globe";
 import { useState } from "react";
 
