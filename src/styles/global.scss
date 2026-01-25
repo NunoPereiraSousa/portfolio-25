@@ -1,0 +1,889 @@
+@use "./fonts";
+@use "./reset";
+@use "./index" as *;
+
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+}
+
+body {
+  background: $bg;
+  color: $text;
+  font-family: $ff-sans;
+  overflow-x: hidden;
+
+  // @include mq(desktop, max) {
+  //   background: #ff0000;
+  // }
+
+  // /* iPhone / small screens */
+  // @include mq(tablet, max) {
+  //   background: #ff0;
+  // }
+}
+
+::selection {
+  background: rgba($accent, 0.35);
+}
+
+.guitarCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+
+  pointer-events: none;
+}
+
+.page {
+  padding: 6rem 2rem;
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+
+  @include mq(desktop, max) {
+    gap: 8.4rem;
+  }
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.header-circle {
+  display: block;
+  background-color: $accent;
+  border-radius: 50%;
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.header-text {
+  text-transform: uppercase;
+
+  &.medium {
+    font-size: 1.6rem;
+  }
+
+  &.large {
+    font-size: 2.4rem;
+    font-weight: 500;
+  }
+}
+
+.hero {
+  border-bottom: 1px solid $panel;
+  padding-bottom: 6rem;
+
+  position: relative;
+
+  @include mq(desktop, max) {
+    border-bottom: 1px solid rgba($white, 0.3);
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    top: 30%;
+    right: 10rem;
+
+    width: 80rem;
+    height: 30rem;
+    background-color: #1269da50;
+    filter: blur(18rem);
+
+    @include mq(desktop, max) {
+      top: 20%;
+    }
+  }
+}
+
+.hero h1 {
+  // font-size: 20rem;
+  font-weight: 500;
+
+  margin-bottom: 13.2rem;
+  max-width: 140rem;
+
+  @include mq(desktop, max) {
+    font-size: 14rem;
+  }
+
+  @include mq(tablet, max) {
+    font-size: 8rem;
+    line-height: 110%;
+    margin-bottom: 8rem;
+  }
+}
+
+.hero h1 sup {
+  color: $accent;
+  font-size: 8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  display: inline-flex;
+  margin-top: 1.8rem;
+  vertical-align: top;
+
+  @include mq(tablet, max) {
+    font-size: 3rem;
+    margin-top: 0;
+    transform: translateY(-1.7rem);
+  }
+}
+
+.hero-info {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+
+  @include mq(desktop, max) {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+    gap: 4rem;
+  }
+
+  @include mq(tablet, max) {
+    gap: 6rem;
+  }
+}
+
+.hero-info-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-transform: uppercase;
+}
+
+.hero-info-left-labels {
+  align-items: center;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.hero-info-left-title {
+  color: $muted;
+}
+
+.hero-info-left-label {
+  font-size: $fs-body;
+}
+
+.hero-info-left-image {
+  height: auto;
+  width: 13.6rem;
+}
+
+.hero-info-right {
+}
+
+.hero-info-right-header {
+  font-size: 2.6rem;
+  font-weight: 500;
+
+  margin-bottom: 8.74rem;
+
+  @include mq(tablet, max) {
+    margin-bottom: 4rem;
+  }
+
+  sup {
+    color: $accent;
+    display: inline-flex;
+    font-size: 2rem;
+    text-transform: uppercase;
+    vertical-align: super;
+
+    @include mq(tablet, max) {
+      display: none;
+    }
+  }
+
+  span {
+    color: $muted;
+  }
+
+  @include mq(tablet, max) {
+    line-height: 130%;
+  }
+}
+
+.hero-info-right-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.hero-info-right-list-item {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+
+  font-size: $fs-body;
+  max-width: 60rem;
+  text-transform: uppercase;
+
+  &:last-child {
+    font-weight: 700;
+  }
+
+  @include mq(desktop, max) {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 1rem;
+  }
+}
+
+.hero-info-right-list-item-icon {
+  color: $accent;
+}
+
+.frame {
+  position: relative;
+  padding: 3rem 3.2rem 3.2rem 3.2rem;
+
+  @include mq(tablet, max) {
+    padding: 0 1rem;
+  }
+
+  $corner: 1.4rem; // how long each corner arm is
+  $stroke: 0.1rem; // thickness
+  $color: $white;
+  $inset: 1.4rem; // how far corners are from the edges (inside)
+
+  @include mq(tablet, max) {
+    $inset: -1rem;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: $inset;
+    pointer-events: none;
+
+    background:
+      /* top-left */
+      linear-gradient($color, $color) left top / $stroke $corner no-repeat,
+      linear-gradient($color, $color) left top / $corner $stroke no-repeat,
+      /* top-right */ linear-gradient($color, $color) right top / $stroke
+        $corner no-repeat,
+      linear-gradient($color, $color) right top / $corner $stroke no-repeat,
+      /* bottom-left */ linear-gradient($color, $color) left bottom / $stroke
+        $corner no-repeat,
+      linear-gradient($color, $color) left bottom / $corner $stroke no-repeat,
+      /* bottom-right */ linear-gradient($color, $color) right bottom / $stroke
+        $corner no-repeat,
+      linear-gradient($color, $color) right bottom / $corner $stroke no-repeat;
+  }
+}
+
+.highlights {
+  position: relative;
+
+  border-bottom: 1px solid $panel;
+  padding-bottom: 6rem;
+
+  position: relative;
+
+  @include mq(desktop, max) {
+    border-bottom: 1px solid rgba($white, 0.3);
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    top: -10rem;
+    left: 20rem;
+
+    width: 54rem;
+    height: 28rem;
+    background-color: $accent;
+    filter: blur(18rem);
+
+    opacity: 0.8;
+
+    @include mq(desktop, max) {
+      width: 40rem;
+      height: 20rem;
+    }
+  }
+}
+
+.blob {
+}
+
+.highlights-header {
+  margin-bottom: 1.6rem;
+}
+
+.highlights-label {
+  font-size: 3rem;
+  font-family: $ff-sans;
+  max-width: 62.9rem;
+
+  @include mq(tablet, max) {
+    font-size: 2rem;
+  }
+}
+
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8.5rem;
+  margin-top: 8.5rem;
+
+  @include mq(desktop, max) {
+    gap: 2rem;
+  }
+
+  @include mq(tablet, max) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.highlights-grid-card {
+  border-top: 1px solid $white;
+  padding-top: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 9rem;
+
+  @include mq(desktop, max) {
+    gap: 6rem;
+  }
+
+  @include mq(tablet, max) {
+    align-items: center;
+  }
+}
+
+.highlights-grid-card-header-wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  @include mq(desktop, max) {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 1rem;
+    justify-content: flex-start;
+    min-height: 4.4rem;
+  }
+}
+
+.highlights-grid-card-circle {
+  display: block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background-color: $accent;
+}
+
+.highlights-grid-card-header {
+  font-size: 1.6rem;
+  text-transform: uppercase;
+}
+
+.highlights-grid-card-text {
+  font-size: 10rem;
+  font-weight: 500;
+  font-family: $ff-sans;
+  text-align: center;
+}
+
+.about {
+  border-bottom: 1px solid $panel;
+  padding-bottom: 6rem;
+
+  position: relative;
+
+  @include mq(desktop, max) {
+    border-bottom: 1px solid rgba($white, 0.3);
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    top: -20%;
+    right: 10rem;
+
+    width: 34rem;
+    height: 40rem;
+    background-color: #1269da91;
+    filter: blur(18rem);
+  }
+}
+
+.about-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem;
+
+  @include mq(desktop, max) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.about-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @include mq(desktop, max) {
+    gap: 4rem;
+  }
+}
+
+.about-header {
+  font-weight: 500;
+  font-size: 4rem;
+  line-height: 120%;
+  max-width: 47.3rem;
+  margin-top: 1rem;
+
+  span {
+    color: $muted;
+  }
+
+  @include mq(desktop, max) {
+    max-width: none;
+  }
+}
+
+.about-card {
+  background-color: $white;
+  position: relative;
+  padding: 12rem 1rem 1rem;
+
+  @include mq(desktop, max) {
+    padding: 10rem 2rem 2rem;
+  }
+
+  @include mq(tablet, max) {
+    background-color: $accent;
+  }
+}
+
+.about-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.about-card-list-item {
+  align-items: center;
+  display: flex;
+  gap: 0.6rem;
+  text-transform: uppercase;
+  color: $black;
+
+  p {
+    color: $black;
+
+    @include mq(tablet, max) {
+      color: $white;
+    }
+  }
+
+  @include mq(tablet, max) {
+    color: $white;
+  }
+}
+
+.about-card-icon {
+}
+
+.card-arrow {
+  position: absolute;
+  top: -25%;
+  right: 0;
+
+  rect {
+    fill: $accent;
+
+    @include mq(tablet, max) {
+      fill: $white;
+    }
+  }
+
+  path {
+    @include mq(tablet, max) {
+      fill: $black;
+    }
+  }
+
+  @include mq(desktop, max) {
+    top: -26%;
+    right: 5rem;
+  }
+
+  @include mq(tablet, max) {
+    top: -7rem;
+    right: 0;
+  }
+}
+
+.about-image {
+  height: auto;
+  width: 100%;
+}
+
+.about-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.about-right-card {
+  border: 1px solid $white;
+  height: 35rem;
+  width: 100%;
+  position: relative;
+
+  @include mq(desktop, max) {
+    display: none;
+  }
+}
+
+.about-right-card-image {
+  height: auto;
+  width: 100%;
+}
+
+.about-card-right-label {
+  text-align: center;
+  margin-top: 2.2rem;
+  text-transform: uppercase;
+}
+
+.about-right-card-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.about-right-globes {
+  display: flex;
+  justify-content: space-between;
+}
+
+.about-right-globe {
+  background-color: palegoldenrod;
+  height: 34rem;
+  width: 34rem;
+}
+
+.resume {
+  border-bottom: 1px solid $panel;
+  padding-bottom: 6rem;
+
+  position: relative;
+
+  @include mq(desktop, max) {
+    border-bottom: none;
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    bottom: 30rem;
+    right: 20rem;
+
+    width: 54rem;
+    height: 28rem;
+    background-color: $accent;
+    filter: blur(18rem);
+
+    opacity: 0.2;
+  }
+
+  &::after {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    top: 30rem;
+    right: 0;
+
+    width: 54rem;
+    height: 28rem;
+    background-color: #1269da;
+    filter: blur(18rem);
+
+    opacity: 0.4;
+  }
+
+  .header-text.large {
+    @include mq(tablet, max) {
+      font-size: 1.6rem !important;
+    }
+  }
+}
+
+.resume-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8rem;
+
+  @include mq(desktop, max) {
+    gap: 4rem;
+  }
+
+  @include mq(tablet, max) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.resume-sticky {
+  position: sticky;
+  top: 10rem;
+  height: fit-content;
+
+  @include mq(desktop, max) {
+    top: 6rem;
+  }
+
+  @include mq(tablet, max) {
+    position: static;
+  }
+}
+
+.resume-mark {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.resume-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+.resume-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-transform: uppercase;
+
+  &:first-child .header {
+    @include mq(tablet, max) {
+      display: none;
+    }
+  }
+}
+
+.resume-list-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.expandable-resume {
+  border-bottom: 1px solid $muted;
+  padding-bottom: 1.4rem;
+}
+
+.expandable-resume-label {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+
+  u {
+    color: $muted;
+  }
+
+  span {
+    color: $accent;
+  }
+}
+
+.expandable-resume-button {
+  background-color: transparent;
+  border: 1px solid $white;
+  color: $white;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  padding: 0.4rem 0.6rem 0.4rem 0.2rem;
+  margin-top: 1rem;
+
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: $white;
+    color: $black;
+    border-color: $black;
+  }
+}
+
+.expandable-resume-list {
+  margin-top: 1rem;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-left: 4.5rem;
+  }
+
+  li {
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    list-style-type: disc;
+    line-height: 150%;
+  }
+}
+
+.awards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.basic-item {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid $muted;
+}
+
+.basic-item-title {
+  font-size: 1.6rem;
+  text-transform: uppercase;
+}
+
+.resume-item-text {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid $muted;
+}
+
+.resume-item-text-label {
+  span {
+    color: $accent;
+  }
+}
+
+.footer {
+  padding-bottom: 6rem;
+
+  @include mq(desktop, max) {
+    padding-bottom: 0;
+  }
+}
+
+.footer-title {
+  margin: 2rem 0;
+}
+
+.footer-label {
+  font-size: 3rem;
+  font-family: $ff-sans;
+  max-width: 63rem;
+
+  @include mq(desktop, max) {
+    font-size: 2rem;
+  }
+}
+
+.footer-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 4rem 0;
+}
+
+.footer-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+
+  span {
+    background-color: $white;
+    height: 0.6rem;
+    display: block;
+    border-radius: 50%;
+    margin-top: 0.4rem;
+    width: 0.6rem;
+
+    @include mq(desktop, max) {
+      background-color: $accent;
+    }
+  }
+
+  &:first-child {
+    justify-self: self-start;
+  }
+
+  &:nth-child(2) {
+    justify-self: center;
+  }
+
+  &:last-child {
+    justify-self: self-end;
+  }
+
+  a {
+    color: $white;
+    font-family: $ff-mono;
+    font-size: 1.6rem;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+}
+
+.footer-svg {
+}
+
+.footer-svg-mark {
+  height: auto;
+  width: 100%;
+}
+
+.footer-paragraph {
+  margin-top: 5rem;
+  text-transform: uppercase;
+  text-align: center;
+
+  @include mq(desktop, max) {
+    font-size: 1.4rem;
+  }
+}
+
+.footer-svg-mark-wrapper {
+  width: 100%;
+  aspect-ratio: 1400 / 374; /* important */
+  height: auto;
+}
+
+.footer-svg-mark-webgl,
+.footer-svg-mark-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.globe-1 {
+  height: 34rem;
+  width: 100%;
+  background-color: transparent;
+}

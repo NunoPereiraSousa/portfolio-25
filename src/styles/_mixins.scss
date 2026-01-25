@@ -1,0 +1,41 @@
+@use "sass:map";
+@use "./variables" as *;
+
+/* Media query helper:
+   @include mq(md) { ... }
+   @include mq(lg, max) { ... }
+*/
+@mixin mq($key, $type: min) {
+  $val: map.get($bp, $key);
+
+  @if $val == null {
+    @error "Unknown breakpoint: #{$key}";
+  }
+
+  @if $type == min {
+    @media (min-width: $val) {
+      @content;
+    }
+  } @else if $type == max {
+    @media (max-width: ($val)) {
+      @content;
+    }
+  } @else {
+    @error "mq type must be min or max";
+  }
+}
+
+/* Reduced motion */
+@mixin reduce-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+/* Focus ring */
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.65);
+    outline-offset: 3px;
+  }
+}

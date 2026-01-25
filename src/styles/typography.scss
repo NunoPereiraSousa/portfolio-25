@@ -1,0 +1,35 @@
+@use "./variables" as *;
+@use "./mixins" as *;
+
+h1 {
+  font-size: $fs-h1;
+  line-height: 0.95;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: $fs-h2;
+  line-height: 1.05;
+  font-weight: 500;
+
+  @include mq(tablet, max) {
+    font-size: 4rem;
+  }
+}
+
+h3 {
+}
+
+p {
+  font-size: $fs-body;
+  font-family: $ff-mono;
+  line-height: 1.5;
+  margin: 0;
+  color: $white;
+}
+
+h5 {
+  @include mq(desktop, max) {
+    line-height: 1.5;
+  }
+}

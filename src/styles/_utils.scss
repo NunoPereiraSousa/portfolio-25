@@ -1,0 +1,22 @@
+@use "./variables" as *;
+
+.u-mono {
+  font-family: $ff-mono;
+}
+.u-muted {
+  color: $text-muted;
+}
+.u-accent {
+  color: $accent;
+}
+
+.u-border {
+  border: 1px solid $border;
+}
+
+.u-card {
+  border: 1px solid $border;
+  border-radius: $r-18;
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(1rem);
+}
