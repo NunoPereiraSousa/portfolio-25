@@ -1,10 +1,10 @@
+import Lenis from "lenis";
 import { useEffect } from "react";
-import Lenis from "@studio-freight/lenis";
 
 export function useLenis({ infinite = false }: { infinite?: boolean } = {}) {
   useEffect(() => {
     const prefersReduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     )?.matches;
     if (prefersReduced) return;
 
