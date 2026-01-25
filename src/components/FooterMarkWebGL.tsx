@@ -130,7 +130,7 @@ function BulgePlane({ texture }: { texture: THREE.Texture }) {
     [texture],
   );
 
-  useFrame((state, dt) => {
+  useFrame((dt) => {
     hover.current = THREE.MathUtils.damp(
       hover.current,
       hoverTarget.current,

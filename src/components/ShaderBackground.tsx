@@ -1,5 +1,5 @@
 // src/components/GuitarStringsCanvas.tsx
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type Props = {
   className?: string;
@@ -48,7 +48,7 @@ export function GuitarStringsCanvas({
 
   useEffect(() => {
     const prefersReduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     )?.matches;
     if (prefersReduced) return;
 
