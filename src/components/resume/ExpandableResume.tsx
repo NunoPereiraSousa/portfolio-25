@@ -16,15 +16,14 @@ export function ExpandableResume({ title, date, listElements }: Props) {
 
   return (
     <div className="expandable-resume">
-      <div className="expandable-resume-label">
+      <div className="expandable-resume-label" data-split="lines">
         <p>
           <u>Role:</u>
         </p>
         <p>{title}</p>
       </div>
       <br />
-      <br />
-      <div className="expandable-resume-label">
+      <div className="expandable-resume-label" data-split="lines">
         <p>
           <u>Date:</u>
         </p>

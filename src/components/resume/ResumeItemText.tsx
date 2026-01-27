@@ -5,7 +5,7 @@ type Props = {
 
 export function ResumeItemText({ topText, bottomText }: Props) {
   return (
-    <div className="resume-item-text">
+    <div className="resume-item-text" data-split="lines">
       <p className="resume-item-text-label">{topText}</p>
       <br />
       <br />
