@@ -1,6 +1,3 @@
-// src/hooks/usePinResume.ts
-"use client";
-
 import { useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,22 +12,35 @@ export function usePinResume(enabled: boolean) {
       ".resume-sticky",
     ) as HTMLElement | null;
     const section = document.querySelector(".resume") as HTMLElement | null;
-
     if (!sticky || !section) return;
 
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top-=50", // same as your top: 10rem-ish
-        end: "bottom bottom", // stop pin when section ends
-        pin: sticky,
-        pinSpacing: true,
-        invalidateOnRefresh: true,
-      });
+    const mm = gsap.matchMedia();
 
-      ScrollTrigger.refresh();
-    });
+    mm.add(
+      {
+        // ✅ pin only when it makes sense
+        desktop: "(min-width: 1024px) and (hover: hover) and (pointer: fine)",
+        // ✅ mobile/tablet: no pin
+        touch: "(max-width: 1023px), (hover: none), (pointer: coarse)",
+      },
+      (context) => {
+        const { desktop } = context.conditions as { desktop?: boolean };
 
-    return () => ctx.revert();
+        if (!desktop) return; // ✅ do nothing on phone
+
+        const st = ScrollTrigger.create({
+          trigger: section,
+          start: "top top-=50",
+          end: "bottom bottom",
+          pin: sticky,
+          pinSpacing: true,
+          invalidateOnRefresh: true,
+        });
+
+        return () => st.kill();
+      },
+    );
+
+    return () => mm.revert();
   }, [enabled]);
 }

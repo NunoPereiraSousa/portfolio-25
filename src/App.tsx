@@ -16,6 +16,7 @@ import { useAssetPreload } from "./hooks/useAppPreload";
 import { useSplitLinesOnScroll } from "./hooks/useSplitTextHeadings";
 import { usePinResume } from "./hooks/usePinResume";
 import gsap from "gsap";
+import { useScrollLock } from "./hooks/useScrollLock";
 
 export default function App() {
   useLenis({ infinite: false });
@@ -30,7 +31,7 @@ export default function App() {
   usePinResume(ready);
 
   // lock while preloader is showing
-  // useScrollLock(!ready);
+  useScrollLock(!ready);
 
   // always start at top on first mount
   useEffect(() => {
@@ -230,44 +231,24 @@ export default function App() {
                   <div className="about-card">
                     <ul className="about-card-list">
                       <li className="about-card-list-item">
-                        <Plus
-                          size={24}
-                          className="about-card-icon"
-                          data-split="lines"
-                        />{" "}
-                        <p>Software Engineer.</p>
+                        <Plus size={24} className="about-card-icon" />{" "}
+                        <p data-split="lines">Software Engineer.</p>
                       </li>
                       <li className="about-card-list-item">
-                        <Plus
-                          size={24}
-                          className="about-card-icon"
-                          data-split="lines"
-                        />{" "}
-                        <p>programming teacher.</p>
+                        <Plus size={24} className="about-card-icon" />{" "}
+                        <p data-split="lines">programming teacher.</p>
                       </li>
                       <li className="about-card-list-item">
-                        <Plus
-                          size={24}
-                          className="about-card-icon"
-                          data-split="lines"
-                        />{" "}
-                        <p>athlete after working hours.</p>
+                        <Plus size={24} className="about-card-icon" />{" "}
+                        <p data-split="lines">athlete after working hours.</p>
                       </li>
                       <li className="about-card-list-item">
-                        <Plus
-                          size={24}
-                          className="about-card-icon"
-                          data-split="lines"
-                        />{" "}
-                        <p>pianist on sundays.</p>
+                        <Plus size={24} className="about-card-icon" />{" "}
+                        <p data-split="lines">pianist on sundays.</p>
                       </li>
                       <li className="about-card-list-item">
-                        <Plus
-                          size={24}
-                          className="about-card-icon"
-                          data-split="lines"
-                        />{" "}
-                        <p>TRAVELLER, MORE THAN I SHOULD.</p>
+                        <Plus size={24} className="about-card-icon" />{" "}
+                        <p data-split="lines">TRAVELLER, MORE THAN I SHOULD.</p>
                       </li>
                     </ul>
                     <div className="card-arrow">

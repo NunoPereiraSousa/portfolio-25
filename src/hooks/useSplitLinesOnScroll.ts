@@ -5,58 +5,79 @@ import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export function useSplitLinesOnScroll(enabled: boolean) {
+export function useSplitLinesOnScroll(
+  enabled: boolean,
+  scopeRef: React.RefObject<HTMLElement | null>,
+) {
   useLayoutEffect(() => {
     if (!enabled) return;
 
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
+    let killed = false;
+
     const ctx = gsap.context(() => {
-      const els = gsap.utils.toArray<HTMLElement>("[data-split='lines']");
-      const splits: SplitText[] = [];
+      (async () => {
+        // Even if you preload fonts, it doesn't hurt to ensure
+        await (document as any).fonts?.ready;
 
-      els.forEach((el) => {
-        // create split
-        const split = SplitText.create(el, {
-          type: "lines",
-          mask: "lines",
-          autoSplit: true,
-          ignore: "sup", // keeps your <sup> intact
+        // wait for unlock/reflow + paint (important on iOS)
+        await new Promise<void>((r) => requestAnimationFrame(() => r()));
+        await new Promise<void>((r) => requestAnimationFrame(() => r()));
+        if (killed) return;
+
+        const els = gsap.utils.toArray<HTMLElement>("[data-split='lines']");
+        const splits: SplitText[] = [];
+        const triggers: ScrollTrigger[] = [];
+
+        els.forEach((el) => {
+          // only split elements that actually contain text
+          if (!el.textContent?.trim()) return;
+
+          const split = SplitText.create(el, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            ignore: "sup",
+            linesClass: "split-line",
+          });
+
+          splits.push(split);
+
+          gsap.set(split.lines, { yPercent: 120, opacity: 0, force3D: true });
+
+          const tl = gsap.timeline({ paused: true }).to(split.lines, {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.0,
+            ease: "power3.out",
+            stagger: 0.08,
+            overwrite: "auto",
+            clearProps: "transform,opacity",
+          });
+
+          triggers.push(
+            ScrollTrigger.create({
+              trigger: el,
+              start: "top 80%",
+              once: true,
+              onEnter: () => tl.play(0),
+            }),
+          );
         });
 
-        splits.push(split);
+        ScrollTrigger.refresh();
 
-        // init hidden
-        gsap.set(split.lines, { yPercent: 120, autoAlpha: 0 });
-
-        // build animation (paused)
-        const tl = gsap.timeline({ paused: true });
-        tl.to(split.lines, {
-          yPercent: 0,
-          autoAlpha: 1,
-          duration: 1.5,
-          ease: "power4.out",
-          stagger: 0.12,
-          clearProps: "transform,opacity",
+        ctx.add(() => {
+          triggers.forEach((t) => t.kill());
+          splits.forEach((s) => s.revert());
         });
+      })();
+    }, scopeRef);
 
-        // ScrollTrigger: play when entering viewport
-        ScrollTrigger.create({
-          trigger: el,
-          start: "top 80%",
-          once: true, // animate only once
-          onEnter: () => tl.play(0),
-        });
-      });
-
-      // refresh after everything is created (good with custom fonts)
-      ScrollTrigger.refresh();
-
-      return () => {
-        // kill triggers created in this context
-        ScrollTrigger.getAll().forEach((t) => t.kill());
-        splits.forEach((s) => s.revert());
-      };
-    });
-
-    return () => ctx.revert();
-  }, [enabled]);
+    return () => {
+      killed = true;
+      ctx.revert();
+    };
+  }, [enabled, scopeRef]);
 }
