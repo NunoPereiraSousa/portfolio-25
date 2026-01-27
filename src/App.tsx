@@ -182,37 +182,40 @@ export default function App() {
                 <div className="highlights-grid-card">
                   <div className="highlights-grid-card-header-wrapper">
                     <span className="highlights-grid-card-circle"></span>
-                    <h5 className="highlights-grid-card-header">
+                    <h5
+                      className="highlights-grid-card-header"
+                      data-split="lines"
+                    >
                       International awards and recognitions
                     </h5>
                   </div>
-                  <p className="highlights-grid-card-text" data-split="lines">
-                    10+
-                  </p>
+                  <p className="highlights-grid-card-text">10+</p>
                 </div>
 
                 <div className="highlights-grid-card">
                   <div className="highlights-grid-card-header-wrapper">
                     <span className="highlights-grid-card-circle"></span>
-                    <h5 className="highlights-grid-card-header">
+                    <h5
+                      className="highlights-grid-card-header"
+                      data-split="lines"
+                    >
                       Teaching and crafting digital experiences
                     </h5>
                   </div>
-                  <p className="highlights-grid-card-text" data-split="lines">
-                    5y+
-                  </p>
+                  <p className="highlights-grid-card-text">5y+</p>
                 </div>
 
                 <div className="highlights-grid-card">
                   <div className="highlights-grid-card-header-wrapper">
                     <span className="highlights-grid-card-circle"></span>
-                    <h5 className="highlights-grid-card-header">
+                    <h5
+                      className="highlights-grid-card-header"
+                      data-split="lines"
+                    >
                       Insanely happy clients
                     </h5>
                   </div>
-                  <p className="highlights-grid-card-text" data-split="lines">
-                    80+
-                  </p>
+                  <p className="highlights-grid-card-text">80+</p>
                 </div>
               </div>
             </section>
