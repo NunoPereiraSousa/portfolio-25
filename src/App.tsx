@@ -17,6 +17,8 @@ import { useSplitLinesOnScroll } from "./hooks/useSplitTextHeadings";
 import { usePinResume } from "./hooks/usePinResume";
 import gsap from "gsap";
 import { useScrollLock } from "./hooks/useScrollLock";
+import { useLisbonTime } from "./assets/helpers/datetime";
+import { useWeatherLabel } from "./hooks/useWeatherLabel";
 
 export default function App() {
   useLenis({ infinite: false });
@@ -65,6 +67,9 @@ export default function App() {
     });
   }, [ready]);
 
+  const lisbonTime = useLisbonTime();
+  const { label } = useWeatherLabel("Oporto");
+
   return (
     <>
       <div>
@@ -108,7 +113,7 @@ export default function App() {
                 <div className="hero-info-left">
                   <div className="hero-info-left-labels">
                     <p className="hero-info-left-title">[local time]</p>
-                    <p className="hero-info-left-label">9.20 pm</p>
+                    <p className="hero-info-left-label">{lisbonTime}</p>
                   </div>
 
                   <div className="hero-info-left-labels">
@@ -123,7 +128,7 @@ export default function App() {
 
                   <div className="hero-info-left-labels">
                     <p className="hero-info-left-title">[weather]</p>
-                    <p className="hero-info-left-label">rainy</p>
+                    <p className="hero-info-left-label">{label}</p>
                   </div>
 
                   <img src={BarCode} alt="" className="hero-info-left-image" />
@@ -559,14 +564,14 @@ export default function App() {
               <div className="footer-list">
                 <div className="footer-list-item">
                   <span></span>
-                  <a href="http://" target="_blank">
+                  <a href="https://www.linkedin.com/in/nunops" target="_blank">
                     LinkedIn
                   </a>
                 </div>
                 <div className="footer-list-item">
                   <span></span>
                   <a href="mailto:" target="_blank">
-                    LinkedIn
+                    nunopereirasousa00@gmail.com
                   </a>
                   <span></span>
                 </div>
