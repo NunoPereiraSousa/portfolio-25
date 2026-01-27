@@ -15,7 +15,6 @@ import { Preloader } from "./components/Preloader";
 import { useAssetPreload } from "./hooks/useAppPreload";
 import { useSplitLinesOnScroll } from "./hooks/useSplitTextHeadings";
 import { usePinResume } from "./hooks/usePinResume";
-import { useScrollLock } from "./hooks/useScrollLock";
 import gsap from "gsap";
 
 export default function App() {
