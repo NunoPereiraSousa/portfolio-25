@@ -75,6 +75,7 @@ export function Preloader({
       duration: 0.35,
       ease: "power3.out",
       overwrite: true,
+      delay: 500000,
       onUpdate: () => setPctText(Math.round(numRef.current.pct)),
       onComplete: () => {
         endTimerRef.current = window.setTimeout(() => {

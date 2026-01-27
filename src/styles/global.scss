@@ -673,9 +673,9 @@ body {
     top: 6rem;
   }
 
-  // @include mq(tablet, max) {
-  //   position: static;
-  // }
+  @include mq(tablet, max) {
+    position: static;
+  }
 }
 
 .resume-mark {
@@ -961,6 +961,17 @@ body {
     height: 10rem;
     background-color: $accent;
     filter: blur(12rem);
+
+    @include mq(desktop, max) {
+      bottom: 23%;
+    }
+
+    @include mq(tablet, max) {
+      width: 100%;
+      height: 10rem;
+      filter: blur(10rem);
+      bottom: 20.5%;
+    }
   }
 
   &::after {
@@ -978,7 +989,14 @@ body {
     filter: blur(12rem);
 
     @include mq(desktop, max) {
-      top: 20%;
+      top: 30%;
+    }
+
+    @include mq(tablet, max) {
+      width: 100%;
+      height: 10rem;
+      filter: blur(10rem);
+      top: 30%;
     }
   }
 }

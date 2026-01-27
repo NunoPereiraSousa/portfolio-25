@@ -1,5 +1,9 @@
 import Lenis from "lenis";
 import { useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function useLenis({ infinite = false }: { infinite?: boolean } = {}) {
   useEffect(() => {
@@ -13,21 +17,28 @@ export function useLenis({ infinite = false }: { infinite?: boolean } = {}) {
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 1,
-
-      // Optional
-      infinite, // wraps scroll so after bottom you go back to top :contentReference[oaicite:1]{index=1}
-      syncTouch: infinite, // recommended for touch when infinite is enabled :contentReference[oaicite:2]{index=2}
+      infinite,
+      syncTouch: infinite,
     });
 
-    let raf = 0;
-    const loop = (time: number) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(loop);
+    // ✅ tell ScrollTrigger to update on Lenis scroll
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // ✅ drive Lenis from GSAP's ticker (instead of requestAnimationFrame loop)
+    const tick = (time: number) => {
+      lenis.raf(time * 1000); // gsap ticker time is seconds, lenis expects ms
     };
-    raf = requestAnimationFrame(loop);
+
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+
+    // Optional but often helps on mobile
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
+    // (If you ever use ScrollSmoother, you'd also use scrollerProxy here, but with Lenis this is usually enough.)
 
     return () => {
-      cancelAnimationFrame(raf);
+      gsap.ticker.remove(tick);
       lenis.destroy();
     };
   }, [infinite]);
