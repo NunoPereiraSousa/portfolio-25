@@ -28,7 +28,7 @@ export default function App() {
   const images = useMemo(() => [BarCode, Nuno, Hike], []);
   const { progress, loaded } = useAssetPreload(images);
 
-  useSplitLinesOnScroll(ready, pageRef);
+  // useSplitLinesOnScroll(ready, pageRef);
   usePinResume(ready);
 
   // lock while preloader is showing
