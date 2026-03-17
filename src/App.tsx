@@ -561,14 +561,14 @@ export default function App() {
                 </div>
                 <div className="footer-list-item">
                   <span></span>
-                  <a href="mailto:" target="_blank">
+                  <a href="mailto:nunopereirasousa00@gmail.com" target="_blank">
                     nunopereirasousa00@gmail.com
                   </a>
                   <span></span>
                 </div>
                 <div className="footer-list-item">
                   <span></span>
-                  <a href="http://" target="_blank">
+                  <a href="https://github.com/Nunopereirasousa" target="_blank">
                     GitHub
                   </a>
                   <span></span>
