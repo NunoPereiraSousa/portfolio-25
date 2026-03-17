@@ -874,6 +874,23 @@ body {
 .footer-svg-mark {
   height: auto;
   width: 100%;
+  position: relative;
+
+  &::after {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+    top: 30rem;
+    right: 0;
+
+    width: 60%;
+    height: 28rem;
+    background-color: #1269da;
+    filter: blur(18rem);
+
+    opacity: 0.4;
+  }
 }
 
 .footer-paragraph {
