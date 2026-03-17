@@ -127,7 +127,7 @@ export default function App() {
             onDone={() => setReady(true)}
           />
         )}
-        <div className="webgl-desktop-lines">
+        {/* <div className="webgl-desktop-lines">
           <GuitarStringsCanvas
             grid={80}
             step={12}
@@ -135,7 +135,7 @@ export default function App() {
             maxAmp={50}
             dprCap={1.5}
           />
-        </div>
+        </div> */}
 
         {/* Your real content */}
         <div ref={pageRef}>
