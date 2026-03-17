@@ -33,7 +33,7 @@ type Props = {
 };
 
 export function GuitarStringsCanvas({
-  className = "guitarCanvas",
+  className = "guitar-canvas",
   grid = 44,
   step = 26,
   threshold = 12,

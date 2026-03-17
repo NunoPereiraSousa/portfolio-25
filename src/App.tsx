@@ -10,8 +10,6 @@ import Hike from "./assets/images/hike.png";
 import { ExpandableResume } from "./components/resume/ExpandableResume";
 import { BasicResumeItem } from "./components/resume/BasicResumeItem";
 import { ResumeItemText } from "./components/resume/ResumeItemText";
-// import { FooterMarkBulge } from "./components/FooterMarkWebGL";
-import { WireGlobeR3F } from "./components/Globe";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Preloader } from "./components/Preloader";
 import { useAssetPreload } from "./hooks/useAppPreload";
@@ -24,8 +22,7 @@ import { useWeatherLabel } from "./hooks/useWeatherLabel";
 
 export default function App() {
   useLenis({ infinite: false });
-  const [imgVisible, setImgVisible] = useState(false);
-  const [ready, setReady] = useState(true);
+  const [ready, setReady] = useState(false);
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   const images = useMemo(() => [BarCode, Nuno, Hike], []);
@@ -97,12 +94,12 @@ export default function App() {
         {/* Your real content */}
         <div ref={pageRef}>
           <div className="webgl-mobile-lines">
-            <span className="lines"></span>
-            <span className="lines"></span>
-            <span className="lines"></span>
-            <span className="lines"></span>
-            <span className="lines"></span>
-            <span className="lines"></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
 
           <main className="page">
@@ -234,79 +231,75 @@ export default function App() {
             </section>
 
             <section className="about">
-              <div className="about-container">
-                <SectionHeader text={"About"} />
+              <SectionHeader text={"About"} />
 
-                <div className="about-grid">
-                  <figure className="about-left-figure">
-                    <img src={Nuno} alt="" className="about-left-image" />
-                  </figure>
+              <div className="about-layout">
+                <figure className="about-portrait">
+                  <img src={Nuno} alt="" className="about-portrait-image" />
+                </figure>
 
-                  <div className="about-left">
-                    <div>
-                      <h4 className="about-header" data-split="lines">
-                        My name is Nuno, born and raised in the beautiful city
-                        of oporto, the best city in Portugal. <br />
-                        <span>I hope we are on the same page about this.</span>
-                      </h4>
-                    </div>
-
-                    <div className="about-card">
-                      <ul className="about-card-list">
-                        <li className="about-card-list-item">
-                          <Plus size={24} className="about-card-icon" />{" "}
-                          <p data-split="lines">Software Engineer.</p>
-                        </li>
-                        <li className="about-card-list-item">
-                          <Plus size={24} className="about-card-icon" />{" "}
-                          <p data-split="lines">programming teacher.</p>
-                        </li>
-                        <li className="about-card-list-item">
-                          <Plus size={24} className="about-card-icon" />{" "}
-                          <p data-split="lines">athlete after working hours.</p>
-                        </li>
-                        <li className="about-card-list-item">
-                          <Plus size={24} className="about-card-icon" />{" "}
-                          <p data-split="lines">pianist on sundays.</p>
-                        </li>
-                        <li className="about-card-list-item">
-                          <Plus size={24} className="about-card-icon" />{" "}
-                          <p data-split="lines">
-                            TRAVELLER, MORE THAN I SHOULD.
-                          </p>
-                        </li>
-                      </ul>
-                      <div className="card-arrow">
-                        <svg
-                          width="142"
-                          height="142"
-                          viewBox="0 0 142 142"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="70.7107"
-                            width="100"
-                            height="100"
-                            transform="rotate(45 70.7107 0)"
-                          />
-                          <path
-                            d="M51.7608 90.3677L49.8394 90.3587L49.8511 92.2774L51.7697 92.2891L51.7608 90.3677ZM49.6871 57.7931L49.8394 90.3587L53.6821 90.3767L53.5299 57.811L49.6871 57.7931ZM51.7697 92.2891L84.3354 92.4413L84.3174 88.5986L51.7518 88.4463L51.7697 92.2891ZM53.124 91.7309L93.6407 51.2142L90.9142 48.4877L50.3975 89.0044L53.124 91.7309Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                <div className="about-content">
+                  <div>
+                    <h4 className="about-title" data-split="lines">
+                      My name is Nuno, born and raised in the beautiful city of
+                      oporto, the best city in Portugal. <br />
+                      <span>I hope we are on the same page about this.</span>
+                    </h4>
                   </div>
 
-                  <figure className="about-right-figure">
-                    <img
-                      src={LookingDown}
-                      alt=""
-                      className="about-right-image"
-                    />
-                  </figure>
+                    <div className="about-facts">
+                      <ul className="about-facts-list">
+                        <li className="about-facts-item">
+                          <Plus size={24} />{" "}
+                          <p data-split="lines">Software Engineer.</p>
+                        </li>
+                        <li className="about-facts-item">
+                          <Plus size={24} />{" "}
+                          <p data-split="lines">programming teacher.</p>
+                        </li>
+                        <li className="about-facts-item">
+                          <Plus size={24} />{" "}
+                          <p data-split="lines">athlete after working hours.</p>
+                        </li>
+                        <li className="about-facts-item">
+                          <Plus size={24} />{" "}
+                          <p data-split="lines">pianist on sundays.</p>
+                        </li>
+                        <li className="about-facts-item">
+                          <Plus size={24} />{" "}
+                          <p data-split="lines">TRAVELLER, MORE THAN I SHOULD.</p>
+                        </li>
+                      </ul>
+                    <div className="about-facts-arrow">
+                      <svg
+                        width="142"
+                        height="142"
+                        viewBox="0 0 142 142"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect
+                          x="70.7107"
+                          width="100"
+                          height="100"
+                          transform="rotate(45 70.7107 0)"
+                        />
+                        <path
+                          d="M51.7608 90.3677L49.8394 90.3587L49.8511 92.2774L51.7697 92.2891L51.7608 90.3677ZM49.6871 57.7931L49.8394 90.3587L53.6821 90.3767L53.5299 57.811L49.6871 57.7931ZM51.7697 92.2891L84.3354 92.4413L84.3174 88.5986L51.7518 88.4463L51.7697 92.2891ZM53.124 91.7309L93.6407 51.2142L90.9142 48.4877L50.3975 89.0044L53.124 91.7309Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
+
+                <figure className="about-supporting-figure">
+                  <img
+                    src={LookingDown}
+                    alt=""
+                    className="about-supporting-image"
+                  />
+                </figure>
               </div>
             </section>
 
@@ -581,9 +574,6 @@ export default function App() {
               </div>
 
               <div className="footer-svg">
-                {/* <div className="footer-svg-mark-wrapper">
-              <FooterMarkBulge className="footer-svg-mark-webgl" />
-            </div> */}
                 <div className="footer-svg-mark">
                   <svg
                     viewBox="0 0 1400 374"

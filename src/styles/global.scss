@@ -29,14 +29,12 @@ body {
   background: rgba($accent, 0.35);
 }
 
-.guitarCanvas {
+.guitar-canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   opacity: 1;
-
-  pointer-events: none;
 }
 
 .page {
@@ -69,15 +67,15 @@ body {
 
 .header-text {
   text-transform: uppercase;
+}
 
-  &.medium {
-    font-size: 1.6rem;
-  }
+.header-text--medium {
+  font-size: 1.6rem;
+}
 
-  &.large {
-    font-size: 2.4rem;
-    font-weight: 500;
-  }
+.header-text--large {
+  font-size: 2.4rem;
+  font-weight: 500;
 }
 
 .hero {
@@ -226,9 +224,6 @@ body {
   width: 13.6rem;
 }
 
-.hero-info-right {
-}
-
 .hero-info-right-header {
   font-size: 2.6rem;
   font-weight: 500;
@@ -335,8 +330,6 @@ body {
   border-bottom: 1px solid $panel;
   padding-bottom: 6rem;
 
-  position: relative;
-
   @include mq(desktop, max) {
     border-bottom: 1px solid rgba($white, 0.3);
   }
@@ -361,9 +354,6 @@ body {
       height: 20rem;
     }
   }
-}
-
-.blob {
 }
 
 .highlights-header {
@@ -449,7 +439,6 @@ body {
 .about {
   border-bottom: 1px solid $panel;
   padding-bottom: 6rem;
-
   position: relative;
 
   @include mq(desktop, max) {
@@ -471,7 +460,7 @@ body {
   }
 }
 
-.about-grid {
+.about-layout {
   margin-top: 2rem;
   display: flex;
   gap: 4rem;
@@ -481,7 +470,28 @@ body {
   }
 }
 
-.about-left {
+.about-portrait,
+.about-supporting-figure {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 70rem;
+
+  @include mq(tablet, max) {
+    height: 40rem;
+  }
+}
+
+.about-portrait-image,
+.about-supporting-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -491,28 +501,24 @@ body {
   }
 }
 
-.about-header {
-  font-weight: 500;
-  font-size: 4rem;
-  line-height: 120%;
+.about-title {
   width: 100%;
   margin-top: 1rem;
+  font-size: 4rem;
+  font-weight: 500;
+  line-height: 120%;
 
   span {
     color: $muted;
   }
-
-  @include mq(desktop, max) {
-    max-width: none;
-  }
 }
 
-.about-card {
-  background-color: $white;
+.about-facts {
   position: relative;
-  padding: 8rem 1rem 4rem;
-  height: fit-content;
   width: 58rem;
+  height: fit-content;
+  padding: 8rem 1rem 4rem;
+  background-color: $white;
 
   @include mq(desktop, between, wide) {
     width: 44rem;
@@ -523,24 +529,24 @@ body {
   }
 
   @include mq(tablet, max) {
-    background-color: $accent;
-    margin-top: 6rem;
     width: auto;
+    margin-top: 6rem;
+    background-color: $accent;
   }
 }
 
-.about-card-list {
+.about-facts-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.about-card-list-item {
-  align-items: center;
+.about-facts-item {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
-  text-transform: uppercase;
   color: $black;
+  text-transform: uppercase;
 
   p {
     color: $black;
@@ -555,10 +561,7 @@ body {
   }
 }
 
-.about-card-icon {
-}
-
-.card-arrow {
+.about-facts-arrow {
   position: absolute;
   top: -25%;
   right: 0;
@@ -586,100 +589,6 @@ body {
     top: -7rem;
     right: 0;
   }
-}
-
-.about-left-figure {
-  position: relative;
-  overflow: hidden;
-
-  width: 100%;
-  height: 70rem;
-
-  @include mq(tablet, max) {
-    height: 40rem;
-  }
-}
-
-.about-left-image {
-  height: 100%;
-  left: 0;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-.about-right-figure {
-  position: relative;
-  overflow: hidden;
-
-  width: 100%;
-  height: 70rem;
-
-  @include mq(tablet, max) {
-    height: 40rem;
-  }
-}
-
-.about-right-image {
-  height: 100%;
-  left: 0;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-.about-image canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-}
-
-.about-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.about-right-card {
-  border: 1px solid $white;
-  height: 35rem;
-  width: 100%;
-  position: relative;
-
-  @include mq(desktop, max) {
-    display: none;
-  }
-}
-
-.about-right-card-image {
-  height: auto;
-  width: 100%;
-}
-
-.about-card-right-label {
-  text-align: center;
-  margin-top: 2.2rem;
-  text-transform: uppercase;
-}
-
-.about-right-card-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.about-right-globes {
-  display: flex;
-  justify-content: space-between;
-}
-
-.about-right-globe {
-  background-color: palegoldenrod;
-  height: 34rem;
-  width: 34rem;
 }
 
 .resume {
@@ -724,7 +633,7 @@ body {
     opacity: 0.4;
   }
 
-  .header-text.large {
+  .header-text--large {
     @include mq(tablet, max) {
       font-size: 1.6rem !important;
     }
@@ -842,7 +751,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding-left: 4.5rem;
+    margin-top: 2rem;
+    padding-left: 2rem;
 
     @include mq(tablet, max) {
       padding-left: 2rem;
@@ -961,9 +871,6 @@ body {
   }
 }
 
-.footer-svg {
-}
-
 .footer-svg-mark {
   height: auto;
   width: 100%;
@@ -976,29 +883,6 @@ body {
 
   @include mq(desktop, max) {
     font-size: 1.4rem;
-  }
-}
-
-.footer-svg-mark-wrapper {
-  width: 100%;
-  aspect-ratio: 1400 / 374; /* important */
-  height: auto;
-}
-
-.footer-svg-mark-webgl,
-.footer-svg-mark-wrapper canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-}
-
-.globe-1 {
-  height: 34rem;
-  width: 100%;
-  background-color: transparent;
-
-  @include mq(desktop, max) {
-    display: none;
   }
 }
 
