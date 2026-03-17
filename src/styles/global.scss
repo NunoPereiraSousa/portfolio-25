@@ -397,6 +397,7 @@ body {
   }
 
   @include mq(tablet, max) {
+    align-items: center;
   }
 }
 
@@ -425,6 +426,10 @@ body {
 .highlights-grid-card-header {
   font-size: 1.6rem;
   text-transform: uppercase;
+
+  @include mq(tablet, max) {
+    text-transform: none;
+  }
 }
 
 .highlights-grid-card-text {
