@@ -105,11 +105,11 @@ export default function App() {
           <main className="page">
             <section className="hero">
               <h1>
-                <span data-split="lines">The Piiiixel</span>
+                <span>The Piiiixel</span>
                 <figure className="hero-figure">
                   <img src={HeroImage} alt="" className="hero-image" />
                 </figure>
-                <span data-split="lines">
+                <span>
                   Perfe©t Chef <sup>ns</sup>
                 </span>
               </h1>
