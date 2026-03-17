@@ -22,9 +22,6 @@ import { useWeatherLabel } from "./hooks/useWeatherLabel";
 export default function App() {
   useLenis();
   const [ready, setReady] = useState(false);
-  const [useFakePreloader, setUseFakePreloader] = useState(false);
-  const [fakeProgress, setFakeProgress] = useState(0);
-  const [fakeLoaded, setFakeLoaded] = useState(false);
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   const images = useMemo(() => [BarCode, Nuno, HeroImage, LookingDown], []);
@@ -35,37 +32,6 @@ export default function App() {
 
   // lock while preloader is showing
   useScrollLock(!ready);
-
-  useEffect(() => {
-    const shouldUseFake =
-      window.matchMedia("(max-width: 767px)").matches ||
-      window.matchMedia("(hover: none), (pointer: coarse)").matches;
-
-    setUseFakePreloader(shouldUseFake);
-  }, []);
-
-  useEffect(() => {
-    if (!useFakePreloader || ready) return;
-
-    setFakeProgress(0);
-    setFakeLoaded(false);
-
-    let current = 0;
-    const progressTimer = window.setInterval(() => {
-      current = Math.min(current + 0.14, 0.9);
-      setFakeProgress(current);
-    }, 140);
-
-    const finishTimer = window.setTimeout(() => {
-      setFakeProgress(1);
-      setFakeLoaded(true);
-    }, 1400);
-
-    return () => {
-      window.clearInterval(progressTimer);
-      window.clearTimeout(finishTimer);
-    };
-  }, [useFakePreloader, ready]);
 
   // always start at top on first mount
   useEffect(() => {
@@ -117,10 +83,10 @@ export default function App() {
       <div>
         {!ready && (
           <Preloader
-            progress={useFakePreloader ? fakeProgress : progress}
-            loaded={useFakePreloader ? fakeLoaded : loaded}
-            startDelayMs={useFakePreloader ? 0 : 1000}
-            endHoldMs={useFakePreloader ? 250 : 1000}
+            progress={progress}
+            loaded={loaded}
+            startDelayMs={1000}
+            endHoldMs={1000}
             onDone={() => setReady(true)}
           />
         )}
