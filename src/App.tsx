@@ -22,12 +22,13 @@ import { useWeatherLabel } from "./hooks/useWeatherLabel";
 export default function App() {
   useLenis();
   const [ready, setReady] = useState(false);
+  const [splitReady, setSplitReady] = useState(false);
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   const images = useMemo(() => [BarCode, Nuno, HeroImage, LookingDown], []);
   const { progress, loaded } = useAssetPreload(images);
 
-  useSplitLinesOnScroll(ready, pageRef);
+  useSplitLinesOnScroll(splitReady, pageRef);
   usePinResume(ready);
 
   // lock while preloader is showing
@@ -42,6 +43,19 @@ export default function App() {
   useEffect(() => {
     if (!ready) return;
     window.scrollTo(0, 0);
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready) {
+      setSplitReady(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setSplitReady(true);
+    }, 250);
+
+    return () => window.clearTimeout(timer);
   }, [ready]);
 
   useEffect(() => {

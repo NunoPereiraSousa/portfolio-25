@@ -73,7 +73,7 @@ export function useSplitLinesOnScroll(
         triggers.push(
           ScrollTrigger.create({
             trigger: el,
-            start: "top 80%",
+            start: "top 90%",
             once: true,
             onEnter: () => tl.play(0),
             invalidateOnRefresh: true,
