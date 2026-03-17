@@ -15,14 +15,6 @@ export function useSplitLinesOnScroll(
     if (!enabled) return;
 
     const scopeEl = scopeRef?.current ?? document.body;
-    const isMobile =
-      window.matchMedia?.("(max-width: 767px)")?.matches ||
-      window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches;
-    const triggerStart = isMobile ? "top 97%" : "top 90%";
-    const lineOffset = isMobile ? 108 : 120;
-    const duration = isMobile ? 0.55 : 0.9;
-    const stagger = isMobile ? 0.05 : 0.12;
-    const ease = isMobile ? "power2.out" : "power4.out";
 
     const ctx = gsap.context(() => {
       const els = gsap.utils.toArray<HTMLElement>(
@@ -34,67 +26,54 @@ export function useSplitLinesOnScroll(
       const tls: gsap.core.Timeline[] = [];
 
       els.forEach((el) => {
+        // Avoid flicker: hide the whole element until split is applied
+        gsap.set(el, { visibility: "hidden" });
+
+        const split = SplitText.create(el, {
+          type: "lines",
+          linesClass: "split-line",
+          mask: "lines",
+          maskClass: "split-mask",
+          autoSplit: false, // reduce re-splitting surprises
+          ignore: "sup",
+        });
+
+        splits.push(split);
+
+        const lines = split.lines as HTMLElement[];
+        const masks = (split.masks || []) as HTMLElement[];
+
+        // Ensure masks actually clip
+        masks.forEach((m) => {
+          m.style.overflow = "hidden";
+          m.style.display = "block";
+        });
+
+        lines.forEach((l) => {
+          l.style.display = "block";
+          l.style.willChange = "transform";
+        });
+
+        // Set initial state BEFORE revealing the element
+        gsap.set(lines, { yPercent: 120, autoAlpha: 0 });
+        gsap.set(el, { visibility: "visible" });
+
         const tl = gsap.timeline({ paused: true });
-
-        if (isMobile) {
-          gsap.set(el, { y: 24, autoAlpha: 0, willChange: "transform,opacity" });
-
-          tl.to(el, {
-            y: 0,
-            autoAlpha: 1,
-            duration: 0.42,
-            ease: "power2.out",
-            clearProps: "transform,opacity,willChange",
-          });
-        } else {
-          // Avoid flicker: hide the whole element until split is applied
-          gsap.set(el, { visibility: "hidden" });
-
-          const split = SplitText.create(el, {
-            type: "lines",
-            linesClass: "split-line",
-            mask: "lines",
-            maskClass: "split-mask",
-            autoSplit: false, // reduce re-splitting surprises
-            ignore: "sup",
-          });
-
-          splits.push(split);
-
-          const lines = split.lines as HTMLElement[];
-          const masks = (split.masks || []) as HTMLElement[];
-
-          // Ensure masks actually clip
-          masks.forEach((m) => {
-            m.style.overflow = "hidden";
-            m.style.display = "block";
-          });
-
-          lines.forEach((l) => {
-            l.style.display = "block";
-            l.style.willChange = "transform";
-          });
-
-          // Set initial state BEFORE revealing the element
-          gsap.set(lines, { yPercent: lineOffset, autoAlpha: 0 });
-          gsap.set(el, { visibility: "visible" });
-
-          tl.to(lines, {
-            yPercent: 0,
-            autoAlpha: 1,
-            duration,
-            ease,
-            stagger,
-            clearProps: "transform,opacity",
-          });
-        }
+        tl.to(lines, {
+          yPercent: 0,
+          autoAlpha: 1,
+          duration: 0.9,
+          ease: "power4.out",
+          stagger: 0.12,
+          clearProps: "transform,opacity",
+        });
 
         tls.push(tl);
 
         triggers.push(
           ScrollTrigger.create({
             trigger: el,
-            start: triggerStart,
+            start: "top 80%",
             once: true,
             onEnter: () => tl.play(0),
             invalidateOnRefresh: true,
