@@ -31,42 +31,42 @@ export default function App() {
   const images = useMemo(() => [BarCode, Nuno, Hike], []);
   const { progress, loaded } = useAssetPreload(images);
 
-  useSplitLinesOnScroll(ready, pageRef);
+  // useSplitLinesOnScroll(ready, pageRef);
   usePinResume(ready);
 
   // lock while preloader is showing
   // useScrollLock(!ready);
 
-  useEffect(() => {
-    const shouldUseFake =
-      window.matchMedia("(max-width: 767px)").matches ||
-      window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  // useEffect(() => {
+  //   const shouldUseFake =
+  //     window.matchMedia("(max-width: 767px)").matches ||
+  //     window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
-    setUseFakePreloader(shouldUseFake);
-  }, []);
+  //   setUseFakePreloader(shouldUseFake);
+  // }, []);
 
-  useEffect(() => {
-    if (!useFakePreloader || ready) return;
+  // useEffect(() => {
+  //   if (!useFakePreloader || ready) return;
 
-    setFakeProgress(0);
-    setFakeLoaded(false);
+  //   setFakeProgress(0);
+  //   setFakeLoaded(false);
 
-    let current = 0;
-    const progressTimer = window.setInterval(() => {
-      current = Math.min(current + 0.14, 0.9);
-      setFakeProgress(current);
-    }, 140);
+  //   let current = 0;
+  //   const progressTimer = window.setInterval(() => {
+  //     current = Math.min(current + 0.14, 0.9);
+  //     setFakeProgress(current);
+  //   }, 140);
 
-    const finishTimer = window.setTimeout(() => {
-      setFakeProgress(1);
-      setFakeLoaded(true);
-    }, 1400);
+  //   const finishTimer = window.setTimeout(() => {
+  //     setFakeProgress(1);
+  //     setFakeLoaded(true);
+  //   }, 1400);
 
-    return () => {
-      window.clearInterval(progressTimer);
-      window.clearTimeout(finishTimer);
-    };
-  }, [useFakePreloader, ready]);
+  //   return () => {
+  //     window.clearInterval(progressTimer);
+  //     window.clearTimeout(finishTimer);
+  //   };
+  // }, [useFakePreloader, ready]);
 
   // always start at top on first mount
   useEffect(() => {
@@ -79,24 +79,22 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [ready]);
 
-  useEffect(() => {
-    if (ready) return;
+  // useEffect(() => {
+  //   if (ready) return;
 
-    // Fallback for mobile Safari / slow font loading so the page never stays
-    // behind the black preloader indefinitely.
-    const fallbackTimer = window.setTimeout(() => {
-      setReady(true);
-    }, 4500);
+  //   const fallbackTimer = window.setTimeout(() => {
+  //     setReady(true);
+  //   }, 4500);
 
-    return () => window.clearTimeout(fallbackTimer);
-  }, [ready]);
+  //   return () => window.clearTimeout(fallbackTimer);
+  // }, [ready]);
 
   // start hidden once (mount)
-  useEffect(() => {
-    const el = pageRef.current;
-    if (!el) return;
-    gsap.set(el, { autoAlpha: 0 }); // opacity:0 + visibility:hidden
-  }, []);
+  // useEffect(() => {
+  //   const el = pageRef.current;
+  //   if (!el) return;
+  //   gsap.set(el, { autoAlpha: 0 }); // opacity:0 + visibility:hidden
+  // }, []);
 
   // fade in when ready
   // useEffect(() => {
