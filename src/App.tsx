@@ -32,7 +32,7 @@ export default function App() {
   const { progress, loaded } = useAssetPreload(images);
 
   useSplitLinesOnScroll(ready, pageRef);
-  usePinResume(ready);
+  // usePinResume(ready);
 
   // lock while preloader is showing
   useScrollLock(!ready);
