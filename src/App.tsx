@@ -21,7 +21,7 @@ import { useLisbonTime } from "./assets/helpers/datetime";
 import { useWeatherLabel } from "./hooks/useWeatherLabel";
 
 export default function App() {
-  useLenis({ infinite: false });
+  // useLenis({ infinite: false });
   const [ready, setReady] = useState(false);
   const [useFakePreloader, setUseFakePreloader] = useState(false);
   const [fakeProgress, setFakeProgress] = useState(0);
@@ -32,10 +32,10 @@ export default function App() {
   const { progress, loaded } = useAssetPreload(images);
 
   useSplitLinesOnScroll(ready, pageRef);
-  // usePinResume(ready);
+  usePinResume(ready);
 
   // lock while preloader is showing
-  useScrollLock(!ready);
+  // useScrollLock(!ready);
 
   useEffect(() => {
     const shouldUseFake =
