@@ -20,7 +20,7 @@ import { useLisbonTime } from "./assets/helpers/datetime";
 import { useWeatherLabel } from "./hooks/useWeatherLabel";
 
 export default function App() {
-  useLenis({ infinite: false });
+  useLenis();
   const [ready, setReady] = useState(false);
   const [useFakePreloader, setUseFakePreloader] = useState(false);
   const [fakeProgress, setFakeProgress] = useState(0);

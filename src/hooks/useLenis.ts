@@ -5,7 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useLenis({ infinite = false }: { infinite?: boolean } = {}) {
+export function useLenis() {
   useEffect(() => {
     const prefersReduced = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
@@ -17,8 +17,6 @@ export function useLenis({ infinite = false }: { infinite?: boolean } = {}) {
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 1,
-      infinite,
-      syncTouch: infinite,
     });
 
     // ✅ tell ScrollTrigger to update on Lenis scroll
@@ -41,5 +39,5 @@ export function useLenis({ infinite = false }: { infinite?: boolean } = {}) {
       gsap.ticker.remove(tick);
       lenis.destroy();
     };
-  }, [infinite]);
+  }, []);
 }

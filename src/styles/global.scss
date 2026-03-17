@@ -4,16 +4,14 @@
 
 html {
   font-size: 62.5%; /* 1rem = 10px */
-  // overflow-x: hidden;
-  // overflow-y: visible;
 }
 
 body {
   background: $bg;
   color: $text;
   font-family: $ff-sans;
-  // overflow-x: hidden;
-  // overflow-y: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
 
   // @include mq(desktop, max) {
   //   background: #ff0000;
@@ -520,9 +518,9 @@ body {
   padding: 8rem 1rem 4rem;
   background-color: $white;
 
-  // @include mq(desktop, between, wide) {
-  //   width: 44rem;
-  // }
+  @include mq(desktop, between, wide) {
+    width: 44rem;
+  }
 
   @include mq(desktop, max) {
     padding: 10rem 2rem 2rem;
