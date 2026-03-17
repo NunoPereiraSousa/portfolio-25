@@ -99,18 +99,18 @@ export default function App() {
   }, []);
 
   // fade in when ready
-  useEffect(() => {
-    if (!ready) return;
-    const el = pageRef.current;
-    if (!el) return;
+  // useEffect(() => {
+  //   if (!ready) return;
+  //   const el = pageRef.current;
+  //   if (!el) return;
 
-    gsap.to(el, {
-      autoAlpha: 1,
-      duration: 0.8,
-      ease: "power2.out",
-      clearProps: "opacity,visibility",
-    });
-  }, [ready]);
+  //   gsap.to(el, {
+  //     autoAlpha: 1,
+  //     duration: 0.8,
+  //     ease: "power2.out",
+  //     clearProps: "opacity,visibility",
+  //   });
+  // }, [ready]);
 
   const lisbonTime = useLisbonTime();
   const { label } = useWeatherLabel("Oporto");
