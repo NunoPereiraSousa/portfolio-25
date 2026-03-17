@@ -34,47 +34,60 @@ export function useSplitLinesOnScroll(
       const tls: gsap.core.Timeline[] = [];
 
       els.forEach((el) => {
-        // Avoid flicker: hide the whole element until split is applied
-        gsap.set(el, { visibility: "hidden" });
-
-        const split = SplitText.create(el, {
-          type: "lines",
-          linesClass: "split-line",
-          mask: "lines",
-          maskClass: "split-mask",
-          autoSplit: false, // reduce re-splitting surprises
-          ignore: "sup",
-        });
-
-        splits.push(split);
-
-        const lines = split.lines as HTMLElement[];
-        const masks = (split.masks || []) as HTMLElement[];
-
-        // Ensure masks actually clip
-        masks.forEach((m) => {
-          m.style.overflow = "hidden";
-          m.style.display = "block";
-        });
-
-        lines.forEach((l) => {
-          l.style.display = "block";
-          l.style.willChange = "transform";
-        });
-
-        // Set initial state BEFORE revealing the element
-        gsap.set(lines, { yPercent: lineOffset, autoAlpha: 0 });
-        gsap.set(el, { visibility: "visible" });
-
         const tl = gsap.timeline({ paused: true });
-        tl.to(lines, {
-          yPercent: 0,
-          autoAlpha: 1,
-          duration,
-          ease,
-          stagger,
-          clearProps: "transform,opacity",
-        });
+
+        if (isMobile) {
+          gsap.set(el, { y: 24, autoAlpha: 0, willChange: "transform,opacity" });
+
+          tl.to(el, {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.42,
+            ease: "power2.out",
+            clearProps: "transform,opacity,willChange",
+          });
+        } else {
+          // Avoid flicker: hide the whole element until split is applied
+          gsap.set(el, { visibility: "hidden" });
+
+          const split = SplitText.create(el, {
+            type: "lines",
+            linesClass: "split-line",
+            mask: "lines",
+            maskClass: "split-mask",
+            autoSplit: false, // reduce re-splitting surprises
+            ignore: "sup",
+          });
+
+          splits.push(split);
+
+          const lines = split.lines as HTMLElement[];
+          const masks = (split.masks || []) as HTMLElement[];
+
+          // Ensure masks actually clip
+          masks.forEach((m) => {
+            m.style.overflow = "hidden";
+            m.style.display = "block";
+          });
+
+          lines.forEach((l) => {
+            l.style.display = "block";
+            l.style.willChange = "transform";
+          });
+
+          // Set initial state BEFORE revealing the element
+          gsap.set(lines, { yPercent: lineOffset, autoAlpha: 0 });
+          gsap.set(el, { visibility: "visible" });
+
+          tl.to(lines, {
+            yPercent: 0,
+            autoAlpha: 1,
+            duration,
+            ease,
+            stagger,
+            clearProps: "transform,opacity",
+          });
+        }
 
         tls.push(tl);
 
