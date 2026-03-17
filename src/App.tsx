@@ -118,7 +118,7 @@ export default function App() {
   return (
     <>
       <div>
-        {!ready && (
+        {/* {!ready && (
           <Preloader
             progress={useFakePreloader ? fakeProgress : progress}
             loaded={useFakePreloader ? fakeLoaded : loaded}
@@ -126,7 +126,7 @@ export default function App() {
             endHoldMs={useFakePreloader ? 250 : 1000}
             onDone={() => setReady(true)}
           />
-        )}
+        )} */}
         {/* <div className="webgl-desktop-lines">
           <GuitarStringsCanvas
             grid={80}
