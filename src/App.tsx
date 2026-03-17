@@ -105,11 +105,11 @@ export default function App() {
           <main className="page">
             <section className="hero">
               <h1>
-                <span>The Piiiixel</span>
+                <span data-split="lines">The Piiiixel</span>
                 <figure className="hero-figure">
                   <img src={HeroImage} alt="" className="hero-image" />
                 </figure>
-                <span>
+                <span data-split="lines">
                   Perfe©t Chef <sup>ns</sup>
                 </span>
               </h1>
@@ -247,29 +247,29 @@ export default function App() {
                     </h4>
                   </div>
 
-                    <div className="about-facts">
-                      <ul className="about-facts-list">
-                        <li className="about-facts-item">
-                          <Plus size={24} />{" "}
-                          <p data-split="lines">Software Engineer.</p>
-                        </li>
-                        <li className="about-facts-item">
-                          <Plus size={24} />{" "}
-                          <p data-split="lines">programming teacher.</p>
-                        </li>
-                        <li className="about-facts-item">
-                          <Plus size={24} />{" "}
-                          <p data-split="lines">athlete after working hours.</p>
-                        </li>
-                        <li className="about-facts-item">
-                          <Plus size={24} />{" "}
-                          <p data-split="lines">pianist on sundays.</p>
-                        </li>
-                        <li className="about-facts-item">
-                          <Plus size={24} />{" "}
-                          <p data-split="lines">TRAVELLER, MORE THAN I SHOULD.</p>
-                        </li>
-                      </ul>
+                  <div className="about-facts">
+                    <ul className="about-facts-list">
+                      <li className="about-facts-item">
+                        <Plus size={24} />{" "}
+                        <p data-split="lines">Software Engineer.</p>
+                      </li>
+                      <li className="about-facts-item">
+                        <Plus size={24} />{" "}
+                        <p data-split="lines">programming teacher.</p>
+                      </li>
+                      <li className="about-facts-item">
+                        <Plus size={24} />{" "}
+                        <p data-split="lines">athlete after working hours.</p>
+                      </li>
+                      <li className="about-facts-item">
+                        <Plus size={24} />{" "}
+                        <p data-split="lines">pianist on sundays.</p>
+                      </li>
+                      <li className="about-facts-item">
+                        <Plus size={24} />{" "}
+                        <p data-split="lines">TRAVELLER, MORE THAN I SHOULD.</p>
+                      </li>
+                    </ul>
                     <div className="about-facts-arrow">
                       <svg
                         width="142"
@@ -557,6 +557,7 @@ export default function App() {
                   <a href="https://www.linkedin.com/in/nunops" target="_blank">
                     LinkedIn
                   </a>
+                  <span></span>
                 </div>
                 <div className="footer-list-item">
                   <span></span>
@@ -566,6 +567,7 @@ export default function App() {
                   <span></span>
                 </div>
                 <div className="footer-list-item">
+                  <span></span>
                   <a href="http://" target="_blank">
                     GitHub
                   </a>
