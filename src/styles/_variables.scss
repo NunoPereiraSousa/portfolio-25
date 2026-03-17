@@ -11,9 +11,16 @@ $text-muted: rgba(255, 255, 255, 0.7);
 $border: rgba(255, 255, 255, 0.1);
 
 /* ===== Fonts ===== */
-$ff-sans: "PP Neue Montreal", system-ui, -apple-system, "Segoe UI", Roboto,
-  Arial, sans-serif;
-$ff-mono: "Rand Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+$ff-sans:
+  "PP Neue Montreal",
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  Roboto,
+  Arial,
+  sans-serif;
+$ff-mono:
+  "Rand Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
   "Liberation Mono", "Courier New", monospace;
 
 /* ===== Font sizes (1rem = 10px) ===== */
@@ -58,5 +65,5 @@ $bp: (
   // iPad portrait / small tablets
   desktop: 1024px,
   // laptops and up
-  wide: 1440px // big monitors (optional),,,,,,,
+  wide: 1440px, // big monitors (optional),,,,,,,
 );

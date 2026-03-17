@@ -4,8 +4,9 @@
 /* Media query helper:
    @include mq(md) { ... }
    @include mq(lg, max) { ... }
+   @include mq(desktop, between, wide) { ... }
 */
-@mixin mq($key, $type: min) {
+@mixin mq($key, $type: min, $until: null) {
   $val: map.get($bp, $key);
 
   @if $val == null {
@@ -20,8 +21,18 @@
     @media (max-width: ($val)) {
       @content;
     }
+  } @else if $type == between {
+    $until-val: map.get($bp, $until);
+
+    @if $until-val == null {
+      @error "Unknown upper breakpoint: #{$until}";
+    }
+
+    @media (min-width: $val) and (max-width: ($until-val - 0.02px)) {
+      @content;
+    }
   } @else {
-    @error "mq type must be min or max";
+    @error "mq type must be min, max or between";
   }
 }
 
