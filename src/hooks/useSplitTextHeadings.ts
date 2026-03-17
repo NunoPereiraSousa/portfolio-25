@@ -15,8 +15,6 @@ export function useSplitLinesOnScroll(
     if (!enabled) return;
 
     const scopeEl = scopeRef?.current ?? document.body;
-    const isPhone = window.matchMedia("(max-width: 767px)").matches;
-    const triggerStart = isPhone ? "top 90%" : "top 80%";
 
     const ctx = gsap.context(() => {
       const els = gsap.utils.toArray<HTMLElement>(
@@ -75,7 +73,7 @@ export function useSplitLinesOnScroll(
         triggers.push(
           ScrollTrigger.create({
             trigger: el,
-            start: triggerStart,
+            start: "top 90%",
             once: true,
             onEnter: () => tl.play(0),
             invalidateOnRefresh: true,
