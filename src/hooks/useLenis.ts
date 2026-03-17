@@ -10,7 +10,10 @@ export function useLenis() {
     const prefersReduced = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     )?.matches;
-    if (prefersReduced) return;
+    const isMobile =
+      window.matchMedia?.("(max-width: 767px)")?.matches ||
+      window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches;
+    if (prefersReduced || isMobile) return;
 
     const lenis = new Lenis({
       lerp: 0.08,
