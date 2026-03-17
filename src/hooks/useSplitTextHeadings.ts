@@ -15,6 +15,14 @@ export function useSplitLinesOnScroll(
     if (!enabled) return;
 
     const scopeEl = scopeRef?.current ?? document.body;
+    const isMobile =
+      window.matchMedia?.("(max-width: 767px)")?.matches ||
+      window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches;
+    const triggerStart = isMobile ? "top 97%" : "top 90%";
+    const lineOffset = isMobile ? 108 : 120;
+    const duration = isMobile ? 0.55 : 0.9;
+    const stagger = isMobile ? 0.05 : 0.12;
+    const ease = isMobile ? "power2.out" : "power4.out";
 
     const ctx = gsap.context(() => {
       const els = gsap.utils.toArray<HTMLElement>(
@@ -55,16 +63,16 @@ export function useSplitLinesOnScroll(
         });
 
         // Set initial state BEFORE revealing the element
-        gsap.set(lines, { yPercent: 120, autoAlpha: 0 });
+        gsap.set(lines, { yPercent: lineOffset, autoAlpha: 0 });
         gsap.set(el, { visibility: "visible" });
 
         const tl = gsap.timeline({ paused: true });
         tl.to(lines, {
           yPercent: 0,
           autoAlpha: 1,
-          duration: 0.9,
-          ease: "power4.out",
-          stagger: 0.12,
+          duration,
+          ease,
+          stagger,
           clearProps: "transform,opacity",
         });
 
@@ -73,7 +81,7 @@ export function useSplitLinesOnScroll(
         triggers.push(
           ScrollTrigger.create({
             trigger: el,
-            start: "top 90%",
+            start: triggerStart,
             once: true,
             onEnter: () => tl.play(0),
             invalidateOnRefresh: true,

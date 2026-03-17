@@ -902,13 +902,13 @@ body {
 
 .webgl-mobile-lines {
   display: none;
+
   @include mq(desktop, max) {
     position: fixed;
     top: 0;
     left: 2rem;
     height: 100vh;
     width: calc(100% - 4rem);
-    background-color: $black;
 
     display: flex;
     justify-content: space-between;
