@@ -1,0 +1,79 @@
+@use "../index" as *;
+
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+  overflow-x: hidden;
+  overflow-y: visible;
+  scroll-behavior: auto;
+}
+
+body {
+  background: $bg;
+  color: $text;
+  font-family: $ff-sans;
+  overflow-x: hidden;
+  overflow-y: visible;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-shell {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input,
+textarea,
+select,
+[contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.page {
+  @include flex-column(null);
+
+  padding: 6rem 2rem;
+  position: relative;
+  z-index: 1;
+  gap: 12rem;
+
+  @include mq(desktop, max) {
+    gap: 8.4rem;
+  }
+}
+
+.app-shell--ready:not(.app-shell--text-ready) [data-split="lines"] {
+  visibility: hidden;
+}
+
+::selection {
+  background: rgba($accent, 0.35);
+}
+
+a,
+button {
+  @include focus-ring;
+}
+
+a {
+  transition:
+    color 0.25s $ease-out,
+    opacity 0.25s $ease-out;
+}
+
+button {
+  font: inherit;
+}
+
+.split-mask {
+  overflow: hidden;
+  display: block;
+}
+
+.split-line {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}

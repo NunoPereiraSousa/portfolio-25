@@ -1,0 +1,82 @@
+@use "../index" as *;
+
+.expandable-resume {
+  border-bottom: 1px solid $muted;
+  padding-bottom: 1.4rem;
+}
+
+.expandable-resume-label {
+  @include flex(center, null, null, 1rem);
+
+  u {
+    color: $muted;
+  }
+
+  span {
+    color: $accent;
+  }
+}
+
+.expandable-resume-button {
+  @include flex(center, null, null, 0.4rem);
+
+  margin-top: 3rem;
+  padding: 0.4rem 0.6rem 0.4rem 0.2rem;
+  border: 1px solid $white;
+  background-color: transparent;
+  color: $white;
+  cursor: pointer;
+  font-size: $fs-14;
+  text-transform: uppercase;
+  transition:
+    background-color 0.25s $ease-out,
+    border-color 0.25s $ease-out,
+    color 0.25s $ease-out;
+
+  &:hover {
+    background-color: $white;
+    border-color: $black;
+    color: $black;
+  }
+}
+
+.expandable-resume-list {
+  margin-top: 1rem;
+
+  ul {
+    @include flex-column(1rem);
+
+    margin-top: 2rem;
+    padding-left: 2rem;
+  }
+
+  li {
+    font-size: $fs-16;
+    line-height: 140%;
+    letter-spacing: 0.6px;
+    list-style-type: disc;
+    opacity: 0.75;
+    text-transform: none;
+
+    @include mq(tablet, max) {
+      line-height: 160%;
+    }
+  }
+}
+
+.resume-basic-item,
+.resume-item-text {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid $muted;
+}
+
+.resume-basic-item__title {
+  font-size: $fs-16;
+  text-transform: uppercase;
+}
+
+.resume-item-text__label {
+  span {
+    color: $accent;
+  }
+}

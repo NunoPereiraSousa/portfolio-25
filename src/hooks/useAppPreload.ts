@@ -1,59 +1,66 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  createAppPreloadTasks,
+  getAppPreloadWeight,
+  runPreloadTask,
+} from "@/lib/preload/tasks";
+
+type PreloadOptions = {
+  images: readonly string[];
+  lenisReady: boolean;
+};
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
-function loadImage(src: string) {
-  return new Promise<void>((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => resolve(); // never deadlock
-    img.src = src;
-  });
-}
-
-export function useAssetPreload(images: string[]) {
+export function useAssetPreload({ images, lenisReady }: PreloadOptions) {
   const imagesKey = useMemo(() => images.join("|"), [images]);
+  const lenisReadyRef = useRef(lenisReady);
 
-  const [fontsReady, setFontsReady] = useState(false);
-  const [loadedImgs, setLoadedImgs] = useState(0);
+  const [completedWeight, setCompletedWeight] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    lenisReadyRef.current = lenisReady;
+  }, [lenisReady]);
 
   useEffect(() => {
     let alive = true;
-    setFontsReady(false);
-    setLoadedImgs(0);
 
-    // fonts
-    (async () => {
-      try {
-        await (document as any).fonts?.ready;
-      } catch {
-        // ignore
-      } finally {
-        if (alive) setFontsReady(true);
-      }
-    })();
+    const tasks = createAppPreloadTasks(images, lenisReadyRef, () => alive);
 
-    // images (sequential = stable progress)
+    window.queueMicrotask(() => {
+      if (!alive) return;
+
+      setCompletedWeight(0);
+      setLoaded(false);
+    });
+
     (async () => {
-      for (let i = 0; i < images.length; i++) {
-        await loadImage(images[i]);
-        if (!alive) return;
-        setLoadedImgs(i + 1);
-      }
+      let nextCompletedWeight = 0;
+
+      await Promise.all(
+        tasks.map(async (task) => {
+          await runPreloadTask(task);
+
+          if (!alive) return;
+
+          nextCompletedWeight += task.weight;
+          setCompletedWeight(nextCompletedWeight);
+        }),
+      );
+
+      if (alive) setLoaded(true);
     })();
 
     return () => {
       alive = false;
     };
-  }, [imagesKey]);
+  }, [images, imagesKey]);
 
-  const imgProg = images.length ? loadedImgs / images.length : 1;
-
-  // simple weights: 50% fonts + 50% images
-  const progress = clamp01((fontsReady ? 0.5 : 0) + imgProg * 0.5);
-  const loaded = fontsReady && imgProg >= 1;
+  const totalWeight = getAppPreloadWeight(images);
+  const progress = loaded ? 1 : clamp01(completedWeight / totalWeight);
 
   return { progress, loaded };
 }

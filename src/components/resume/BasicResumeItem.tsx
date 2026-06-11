@@ -4,8 +4,8 @@ type Props = {
 
 export function BasicResumeItem({ text }: Props) {
   return (
-    <div className="basic-item">
-      <p className="basic-item-title" data-split="lines">
+    <div className="resume-basic-item">
+      <p className="resume-basic-item__title" data-split="lines">
         {text}
       </p>
     </div>

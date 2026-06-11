@@ -1,0 +1,93 @@
+@use "../index" as *;
+
+.guitar-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.webgl-desktop-lines {
+  @include mq(desktop, max) {
+    display: none;
+  }
+}
+
+.webgl-mobile-lines {
+  display: none;
+
+  @include mq(desktop, max) {
+    position: fixed;
+    top: 0;
+    left: 2rem;
+    z-index: -999;
+    height: 100vh;
+    width: calc(100% - 4rem);
+    display: block;
+    pointer-events: none;
+  }
+}
+
+.webgl-mobile-lines__vertical,
+.webgl-mobile-lines__horizontal {
+  position: absolute;
+  inset: 0;
+}
+
+.webgl-mobile-lines__vertical {
+  @include flex(null, space-between);
+
+  span {
+    background-color: rgba($white, 0.12);
+    height: 100%;
+    width: 1px;
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: mobile-vertical-line-reveal 0.95s $ease-out forwards;
+
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{($i - 1) * 0.032}s;
+      }
+    }
+  }
+}
+
+.webgl-mobile-lines__horizontal {
+  @include flex-column(null, space-evenly);
+
+  span {
+    background-color: rgba($white, 0.08);
+    height: 1px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: mobile-horizontal-line-reveal 0.95s $ease-out forwards;
+
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{0.18 + (($i - 1) * 0.04)}s;
+      }
+    }
+  }
+}
+
+@keyframes mobile-vertical-line-reveal {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes mobile-horizontal-line-reveal {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@include reduce-motion {
+  .webgl-mobile-lines span {
+    transform: none;
+    animation: none;
+  }
+}

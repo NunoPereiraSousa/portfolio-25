@@ -1,0 +1,22 @@
+@use "../index" as *;
+
+.section-header {
+  @include flex(center, null, null, 0.8rem);
+}
+
+.section-header__dot {
+  @include dot;
+}
+
+.section-header__text {
+  text-transform: uppercase;
+}
+
+.section-header__text--medium {
+  font-size: $fs-16;
+}
+
+.section-header__text--large {
+  font-size: $fs-24;
+  font-weight: 500;
+}

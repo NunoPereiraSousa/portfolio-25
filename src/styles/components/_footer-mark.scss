@@ -1,0 +1,31 @@
+@use "../index" as *;
+
+.footer-svg-mark {
+  aspect-ratio: 1400 / 374;
+  display: block;
+  height: auto;
+  position: relative;
+  width: 100%;
+
+  canvas,
+  svg {
+    display: block;
+    height: 100% !important;
+    width: 100% !important;
+  }
+}
+
+.footer-svg-mark-fallback,
+.footer-svg-mark-canvas {
+  inset: 0;
+  position: absolute !important;
+}
+
+.footer-svg-mark-fallback {
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+
+  &[data-hidden="true"] {
+    opacity: 0;
+  }
+}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
+import { gsap } from "@/lib/animation/gsap";
+import { prefersReducedMotion } from "@/lib/animation/motion";
+import { animationTokens } from "@/lib/animation/tokens";
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
@@ -36,7 +38,6 @@ export function Preloader({
     if (started) return;
 
     numRef.current.pct = 0;
-    setPctText(0);
 
     const t = window.setTimeout(() => setStarted(true), startDelayMs);
     return () => window.clearTimeout(t);
@@ -47,18 +48,19 @@ export function Preloader({
     if (!started) return;
     if (exitingRef.current) return;
 
+    const numberTarget = numRef.current;
     const target = loaded ? 100 : Math.round(clamp01(progress) * 100);
 
-    gsap.to(numRef.current, {
+    gsap.to(numberTarget, {
       pct: target,
-      duration: 0.45,
-      ease: "power3.out",
+      duration: animationTokens.preloader.countDuration,
+      ease: animationTokens.preloader.countEase,
       overwrite: true,
-      onUpdate: () => setPctText(Math.round(numRef.current.pct)),
+      onUpdate: () => setPctText(Math.round(numberTarget.pct)),
     });
 
     return () => {
-      gsap.killTweensOf(numRef.current);
+      gsap.killTweensOf(numberTarget);
     };
   }, [progress, loaded, started]);
 
@@ -69,13 +71,14 @@ export function Preloader({
     if (exitingRef.current) return;
 
     exitingRef.current = true;
+    const numberTarget = numRef.current;
 
-    gsap.to(numRef.current, {
+    gsap.to(numberTarget, {
       pct: 100,
-      duration: 0.35,
-      ease: "power3.out",
+      duration: animationTokens.preloader.completeCountDuration,
+      ease: animationTokens.preloader.countEase,
       overwrite: true,
-      onUpdate: () => setPctText(Math.round(numRef.current.pct)),
+      onUpdate: () => setPctText(Math.round(numberTarget.pct)),
       onComplete: () => {
         endTimerRef.current = window.setTimeout(() => {
           const el = wrapRef.current;
@@ -84,18 +87,24 @@ export function Preloader({
             return;
           }
 
-          gsap.to(el, {
+          if (prefersReducedMotion()) {
+            gsap.set(el, { autoAlpha: 0 });
+            onDone?.();
+            return;
+          }
+
+          const tl = gsap.timeline({ onComplete: () => onDone?.() });
+          tl.to(el, {
             autoAlpha: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            onComplete: () => onDone?.(),
+            duration: animationTokens.preloader.exitDuration,
+            ease: animationTokens.preloader.exitEase,
           });
         }, endHoldMs);
       },
     });
 
     return () => {
-      gsap.killTweensOf(numRef.current);
+      gsap.killTweensOf(numberTarget);
       if (endTimerRef.current !== null) {
         window.clearTimeout(endTimerRef.current);
         endTimerRef.current = null;
@@ -104,8 +113,14 @@ export function Preloader({
   }, [loaded, started, endHoldMs, onDone]);
 
   return (
-    <div ref={wrapRef} className="preloader">
-      <div className="preloader-wrapper">
+    <div
+      ref={wrapRef}
+      className="preloader"
+      role="status"
+      aria-label={`Loading ${pctText}%`}
+      aria-live="polite"
+    >
+      <div className="preloader-wrapper" aria-hidden="true">
         <span className="preloader-number">{pctText}</span>
         <span className="preloader-percentage">%</span>
       </div>

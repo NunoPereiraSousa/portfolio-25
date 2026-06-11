@@ -1,13 +1,15 @@
 type Props = {
   text: string;
-  variation?: string;
+  variation?: "medium" | "large";
 };
 
 export function SectionHeader({ text, variation = "medium" }: Props) {
   return (
-    <div className="header">
-      <span className="header-circle"></span>
-      <h3 className={`header-text header-text--${variation}`}>{text}</h3>
+    <div className="section-header">
+      <span className="section-header__dot"></span>
+      <h3 className={`section-header__text section-header__text--${variation}`}>
+        {text}
+      </h3>
     </div>
   );
 }

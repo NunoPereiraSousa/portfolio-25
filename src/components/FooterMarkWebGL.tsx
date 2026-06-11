@@ -1,202 +1,253 @@
-// import * as React from "react";
-// import * as THREE from "three";
-// import { Canvas, useFrame, useThree } from "@react-three/fiber";
-// import { OrthographicCamera } from "@react-three/drei";
-// import CustomShaderMaterial from "three-custom-shader-material";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrthographicCamera } from "@react-three/drei";
+import * as THREE from "three";
+import svgUrl from "@/assets/images/nuno.svg?url";
 
-// // Vite: get an actual URL
-// import svgUrl from "../assets/images/nUNO.svg?url";
+const SVG_ASPECT_RATIO = 1400 / 374;
 
-// function useSvgCanvasTexture(url: string, targetWidth = 2048) {
-//   const [tex, setTex] = React.useState<THREE.CanvasTexture | null>(null);
+const vertexShader = /* glsl */ `
+  varying vec2 vUv;
 
-//   React.useEffect(() => {
-//     let alive = true;
+  uniform vec2 uMouse;
+  uniform float uRadius;
+  uniform float uTime;
+  uniform float uHover;
+  uniform float uAspect;
 
-//     (async () => {
-//       const svgText = await fetch(url).then((r) => r.text());
-//       const blob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
-//       const blobUrl = URL.createObjectURL(blob);
+  float circleMask(vec2 uv, vec2 point, float radius, float aspect) {
+    vec2 delta = uv - point;
+    delta.x *= aspect;
+    float dist = length(delta);
+    return 1.0 - smoothstep(0.0, radius, dist);
+  }
 
-//       const img = new Image();
-//       img.decoding = "async";
-//       img.src = blobUrl;
-//       await img.decode();
+  void main() {
+    vUv = uv;
 
-//       // Keep your SVG aspect ratio (1400 / 374)
-//       const aspect = 374 / 1400;
-//       const w = targetWidth;
-//       const h = Math.round(targetWidth * aspect);
+    vec3 displaced = position;
+    vec2 delta = uv - uMouse;
+    delta.x *= uAspect;
 
-//       const canvas = document.createElement("canvas");
-//       canvas.width = w;
-//       canvas.height = h;
+    float dist = length(delta);
+    float mask = circleMask(uv, uMouse, uRadius, uAspect);
+    float wave = sin(dist * 10.0 - uTime * 2.0);
+    float ribbon = sin((uv.x * 4.5 + uv.y * 2.0) - uTime * 1.2);
+    vec2 direction = dist > 0.0001 ? normalize(delta) : vec2(0.0);
 
-//       const ctx = canvas.getContext("2d");
-//       if (!ctx) return;
+    displaced.xy += direction * wave * mask * uHover * 0.035;
+    displaced.y += ribbon * mask * uHover * 0.035;
 
-//       ctx.clearRect(0, 0, w, h);
-//       ctx.drawImage(img, 0, 0, w, h);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+  }
+`;
 
-//       URL.revokeObjectURL(blobUrl);
+const fragmentShader = /* glsl */ `
+  varying vec2 vUv;
 
-//       if (!alive) return;
+  uniform sampler2D uTexture;
+  uniform vec2 uMouse;
+  uniform float uRadius;
+  uniform float uTime;
+  uniform float uHover;
+  uniform float uAspect;
 
-//       const texture = new THREE.CanvasTexture(canvas);
-//       texture.colorSpace = THREE.SRGBColorSpace;
-//       texture.minFilter = THREE.LinearFilter;
-//       texture.magFilter = THREE.LinearFilter;
-//       texture.needsUpdate = true;
+  float circleMask(vec2 uv, vec2 point, float radius, float aspect) {
+    vec2 delta = uv - point;
+    delta.x *= aspect;
+    float dist = length(delta);
+    return 1.0 - smoothstep(0.0, radius, dist);
+  }
 
-//       setTex(texture);
-//     })();
+  void main() {
+    vec2 delta = vUv - uMouse;
+    delta.x *= uAspect;
 
-//     return () => {
-//       alive = false;
-//     };
-//   }, [url, targetWidth]);
+    float dist = length(delta);
+    float mask = circleMask(vUv, uMouse, uRadius, uAspect);
+    float wave = sin(dist * 12.0 - uTime * 2.2);
+    float flow = sin((vUv.x * 5.5 + vUv.y * 2.5) - uTime * 1.5);
+    vec2 direction = dist > 0.0001 ? normalize(delta) : vec2(0.0);
+    direction.x /= uAspect;
 
-//   return tex;
-// }
+    vec2 tangent = vec2(-direction.y, direction.x);
+    vec2 uv = vUv;
+    uv -= direction * wave * mask * uHover * 0.018;
+    uv += tangent * flow * mask * uHover * 0.02;
 
-// // Codrops-style bulge: displace Z on a subdivided plane under the mouse
-// const vertexShader = /* glsl */ `
-//   uniform vec2  uMouse;      // plane UV (0..1)
-//   uniform float uRadius;     // bulge radius in UV
-//   uniform float uIntensity;  // bulge height
-//   uniform float uHover;      // 0..1
-//     uniform float uAspect;
-//   varying vec2 vUv;
+    vec4 tex = texture2D(uTexture, uv);
+    vec3 accent = vec3(239.0 / 255.0, 81.0 / 255.0, 67.0 / 255.0);
 
-//     float circleMask(vec2 uv, vec2 p, float r, float aspect) {
-//         vec2 d = uv - p;
-//         d.x *= aspect;
-//         float dist = length(d);
-//         return 1.0 - smoothstep(0.0, r, dist);
-//     }
+    gl_FragColor = vec4(accent, tex.a);
+  }
+`;
 
-//   void main() {
-//     vUv = uv;
+type FooterMarkDeformProps = {
+  className?: string;
+  fallback?: ReactNode;
+};
 
-//     vec3 p = position;
+function useSvgCanvasTexture(url: string, enabled: boolean, targetWidth = 2048) {
+  const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
 
-//     float m = circleMask(uv, uMouse, uRadius, uAspect);
-//     p.z += m * uIntensity * uHover;
+  useEffect(() => {
+    if (!enabled) return;
 
-//     // three-custom-shader-material hook:
-//     csm_Position = p;
-//   }
-// `;
+    let alive = true;
+    let textureToDispose: THREE.CanvasTexture | null = null;
+    let blobUrl: string | null = null;
 
-// const fragmentShader = /* glsl */ `
-//     uniform sampler2D uTexture;
-// varying vec2 vUv;
+    async function loadTexture() {
+      const svgText = await fetch(url).then((response) => response.text());
+      blobUrl = URL.createObjectURL(
+        new Blob([svgText], { type: "image/svg+xml;charset=utf-8" }),
+      );
 
-// // sRGB -> linear
-// vec3 srgbToLinear(vec3 c) {
-//   return pow(c, vec3(2.2));
-// }
+      const image = new Image();
+      image.decoding = "async";
+      image.src = blobUrl;
+      await image.decode();
 
-// void main() {
-//   vec4 tex = texture2D(uTexture, vUv);
+      const canvas = document.createElement("canvas");
+      canvas.width = targetWidth;
+      canvas.height = Math.round(targetWidth / SVG_ASPECT_RATIO);
 
-//   // Exact #EF5143 in sRGB
-//   vec3 brandSRGB = vec3(239.0/255.0, 81.0/255.0, 67.0/255.0);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-//   // Convert to linear before outputting
-//   vec3 brand = srgbToLinear(brandSRGB);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-//   csm_DiffuseColor = vec4(brand, tex.a);
-// }
-// `;
+      const nextTexture = new THREE.CanvasTexture(canvas);
+      nextTexture.colorSpace = THREE.SRGBColorSpace;
+      nextTexture.minFilter = THREE.LinearFilter;
+      nextTexture.magFilter = THREE.LinearFilter;
+      nextTexture.needsUpdate = true;
 
-// function BulgePlane({ texture }: { texture: THREE.Texture }) {
-//   const meshRef = React.useRef<THREE.Mesh>(null!);
-//   const hoverTarget = React.useRef(0);
-//   const hover = React.useRef(0);
+      textureToDispose = nextTexture;
+      if (alive) setTexture(nextTexture);
+    }
 
-//   const { viewport } = useThree();
+    loadTexture().catch(() => undefined);
 
-//   const uniforms = React.useMemo(
-//     () => ({
-//       uTexture: { value: texture },
-//       uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-//       uRadius: { value: 0.18 }, // tweak 0.12..0.25
-//       uIntensity: { value: 2.0 }, // tweak 0.4..1.5
-//       uHover: { value: 0.0 },
-//       uAspect: { value: viewport.width / viewport.height }, // ✅ NEW
-//     }),
-//     [texture],
-//   );
+    return () => {
+      alive = false;
+      textureToDispose?.dispose();
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [enabled, targetWidth, url]);
 
-//   useFrame((dt) => {
-//     hover.current = THREE.MathUtils.damp(
-//       hover.current,
-//       hoverTarget.current,
-//       12,
-//       dt,
-//     );
-//     uniforms.uHover.value = hover.current;
-//   });
+  return texture;
+}
 
-//   return (
-//     <>
-//       <mesh
-//         ref={meshRef}
-//         onPointerOver={(e) => {
-//           e.stopPropagation();
-//           hoverTarget.current = 1;
-//         }}
-//         onPointerOut={(e) => {
-//           e.stopPropagation();
-//           hoverTarget.current = 0;
-//         }}
-//         onPointerMove={(e) => {
-//           e.stopPropagation();
-//           if (e.uv) uniforms.uMouse.value.set(e.uv.x, e.uv.y);
-//         }}
-//       >
-//         {/* Dense plane = smooth bulge */}
-//         <planeGeometry args={[viewport.width, viewport.height, 240, 240]} />
+function DeformPlane({
+  texture,
+  onReady,
+}: {
+  texture: THREE.Texture;
+  onReady: () => void;
+}) {
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+  const hoverTargetRef = useRef(0);
+  const hoverRef = useRef(0);
+  const readyFrameRef = useRef(0);
+  const { viewport } = useThree();
 
-//         <CustomShaderMaterial
-//           baseMaterial={THREE.MeshBasicMaterial}
-//           vertexShader={vertexShader}
-//           fragmentShader={fragmentShader}
-//           uniforms={uniforms}
-//           transparent
-//           alphaTest={0.01}
-//           depthWrite={false}
-//         />
-//       </mesh>
+  const uniforms = useMemo(
+    () => ({
+      uTexture: { value: texture },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uRadius: { value: 0.64 },
+      uTime: { value: 0 },
+      uHover: { value: 0 },
+      uAspect: { value: SVG_ASPECT_RATIO },
+    }),
+    [texture],
+  );
 
-//       {/* <pointLight position={[2, 4, 6]} intensity={25} distance={12} decay={1} /> */}
-//       {/* <ambientLight intensity={1} /> */}
-//     </>
-//   );
-// }
+  useFrame((_, delta) => {
+    hoverRef.current = THREE.MathUtils.damp(
+      hoverRef.current,
+      hoverTargetRef.current,
+      4,
+      delta,
+    );
+    const material = materialRef.current;
+    if (!material) return;
 
-// export function FooterMarkBulge({ className }: { className?: string }) {
-//   const texture = useSvgCanvasTexture(svgUrl, 2048);
+    material.uniforms.uHover.value = hoverRef.current;
+    material.uniforms.uTime.value += delta;
 
-//   return (
-//     <div className={className} style={{ width: "100%", height: "100%" }}>
-//       <Canvas
-//         orthographic
-//         dpr={[1, 1.5]}
-//         gl={{
-//           alpha: true,
-//           antialias: true,
-//           toneMapping: THREE.NoToneMapping, // ✅ important
-//           outputColorSpace: THREE.SRGBColorSpace, // ✅ important (r152+)
-//         }}
-//         onCreated={({ gl }) => {
-//           gl.setClearColor(0x000000, 0);
-//         }}
-//       >
-//         <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={114} />
-//         {texture && <BulgePlane texture={texture} />}
-//       </Canvas>
-//     </div>
-//   );
-// }
+    if (readyFrameRef.current < 2) {
+      readyFrameRef.current += 1;
+
+      if (readyFrameRef.current === 2) {
+        onReady();
+      }
+    }
+  });
+
+  return (
+    <mesh
+      onPointerOver={(event) => {
+        event.stopPropagation();
+        hoverTargetRef.current = 1;
+      }}
+      onPointerOut={(event) => {
+        event.stopPropagation();
+        hoverTargetRef.current = 0;
+      }}
+      onPointerMove={(event) => {
+        event.stopPropagation();
+        if (event.uv) uniforms.uMouse.value.set(event.uv.x, event.uv.y);
+      }}
+    >
+      <planeGeometry args={[viewport.width, viewport.height, 180, 48]} />
+      <shaderMaterial
+        ref={materialRef}
+        transparent
+        alphaTest={0.01}
+        depthWrite={false}
+        uniforms={uniforms}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+      />
+    </mesh>
+  );
+}
+
+export function FooterMarkDeform({ className, fallback }: FooterMarkDeformProps) {
+  const texture = useSvgCanvasTexture(svgUrl, true);
+  const [canvasReady, setCanvasReady] = useState(false);
+
+  return (
+    <div className={className}>
+      <div
+        className="footer-svg-mark-fallback"
+        data-hidden={canvasReady}
+        aria-hidden={canvasReady}
+      >
+        {fallback}
+      </div>
+      <Canvas
+        className="footer-svg-mark-canvas"
+        orthographic
+        dpr={[1, 1.5]}
+        gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          gl.toneMapping = THREE.NoToneMapping;
+        }}
+      >
+        <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={100} />
+        {texture && (
+          <DeformPlane
+            texture={texture}
+            onReady={() => setCanvasReady(true)}
+          />
+        )}
+      </Canvas>
+    </div>
+  );
+}

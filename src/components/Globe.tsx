@@ -76,7 +76,7 @@ function Rings({
     return geos;
   }, [meridians, parallels, steps, radius]);
 
-  // Simple “front/back” fade using material opacity + depthTest trick:
+  // Simple "front/back" fade using material opacity + depthTest trick:
   // We'll draw twice: once dim (back), once brighter (front) with additive blending feel.
   // This is a lightweight approximation that looks like your reference.
   const matBack = useMemo(() => {

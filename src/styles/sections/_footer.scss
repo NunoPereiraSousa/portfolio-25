@@ -1,0 +1,91 @@
+@use "../index" as *;
+
+.footer {
+  padding-bottom: 6rem;
+
+  @include mq(desktop, max) {
+    padding-bottom: 0;
+  }
+}
+
+.footer-title {
+  margin: 2rem 0;
+}
+
+.footer-label {
+  font-size: 3rem;
+  font-family: $ff-sans;
+  max-width: 63rem;
+
+  @include mq(desktop, max) {
+    font-size: 2rem;
+  }
+}
+
+.footer-list {
+  @include grid(repeat(3, 1fr));
+
+  margin: 4rem 0;
+
+  @include mq(tablet, max) {
+    @include flex-column(1.4rem, null, center);
+  }
+}
+
+.footer-list-item {
+  @include flex(center, null, null, 1.2rem);
+
+  span {
+    @include dot(0.6rem, $white);
+
+    margin-top: 0.4rem;
+    transition:
+      background-color 0.25s $ease-out,
+      transform 0.25s $ease-out;
+
+    @include mq(desktop, max) {
+      background-color: $accent;
+    }
+  }
+
+  &:first-child {
+    justify-self: self-start;
+  }
+
+  &:nth-child(2) {
+    justify-self: center;
+  }
+
+  &:last-child {
+    justify-self: self-end;
+  }
+
+  a {
+    color: $white;
+    font-family: $ff-mono;
+    font-size: 1.6rem;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  &:hover {
+    a {
+      color: $accent;
+    }
+
+    span {
+      background-color: $accent;
+      transform: scale(1.2);
+    }
+  }
+}
+
+.footer-paragraph {
+  margin-top: 5rem;
+  text-transform: uppercase;
+  text-align: center;
+
+  @include mq(desktop, max) {
+    font-size: 1.4rem;
+  }
+}

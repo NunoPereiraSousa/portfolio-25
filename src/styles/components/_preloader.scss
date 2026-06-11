@@ -1,0 +1,81 @@
+@use "../index" as *;
+
+.preloader {
+  @include grid(null, null, center, center);
+
+  --preloader-progress: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: $black;
+  color: $white;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    width: 70rem;
+    height: 10rem;
+    border-radius: 999rem;
+    opacity: 0.7;
+    filter: blur(12rem);
+    transform: translate(-50%, -50%) scale(1);
+    transition:
+      filter 0.45s $ease-out,
+      opacity 0.45s $ease-out;
+
+    @include mq(tablet, max) {
+      width: 100%;
+      height: 10rem;
+      filter: blur(10rem);
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  &::before {
+    bottom: 20%;
+    background-color: $accent;
+
+    @include mq(desktop, max) {
+      bottom: 23%;
+    }
+
+    @include mq(tablet, max) {
+      bottom: 20.5%;
+    }
+  }
+
+  &::after {
+    top: 30%;
+    background-color: #1269da;
+    opacity: 0.7;
+  }
+}
+
+.preloader-wrapper {
+  @include flex(center, null, null, 0.6rem);
+
+  position: relative;
+  z-index: 1;
+  font-size: 2rem;
+  margin-bottom: 4rem;
+  transform: scale(calc(1 + (var(--preloader-progress) * 0.08)));
+  transition: transform 0.45s $ease-out;
+}
+
+.preloader-percentage {
+  opacity: 0.2;
+}
+
+@include reduce-motion {
+  .preloader {
+    &::before,
+    &::after {
+      transition: none;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+}

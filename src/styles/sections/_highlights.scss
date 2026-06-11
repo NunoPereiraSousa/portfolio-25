@@ -1,0 +1,94 @@
+@use "../index" as *;
+
+.highlights {
+  @include section-divider;
+
+  position: relative;
+
+  &::before {
+    @include glow($accent, 54rem, 28rem, 18rem, 0.8);
+
+    top: -10rem;
+    left: 20rem;
+
+    @include mq(desktop, max) {
+      width: 40rem;
+      height: 20rem;
+    }
+  }
+}
+
+.highlights-header {
+  margin-bottom: 1.6rem;
+}
+
+.highlights-label {
+  font-size: 3rem;
+  font-family: $ff-sans;
+  max-width: 62.9rem;
+
+  @include mq(tablet, max) {
+    font-size: 2rem;
+  }
+}
+
+.highlights-grid {
+  @include grid(repeat(3, 1fr), 8.5rem);
+
+  margin-top: 8.5rem;
+
+  @include mq(desktop, max) {
+    gap: 2rem;
+  }
+
+  @include mq(tablet, max) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.highlights-grid-card {
+  @include flex-column(9rem);
+
+  border-top: 1px solid $white;
+  padding-top: 1rem;
+
+  @include mq(desktop, max) {
+    gap: 6rem;
+  }
+
+  @include mq(tablet, max) {
+    align-items: center;
+  }
+}
+
+.highlights-grid-card-header-wrapper {
+  @include flex(center, space-between);
+
+  @include mq(desktop, max) {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 1rem;
+    justify-content: flex-start;
+    min-height: 4.4rem;
+  }
+}
+
+.highlights-grid-card-circle {
+  @include dot;
+}
+
+.highlights-grid-card-header {
+  font-size: 1.6rem;
+  text-transform: uppercase;
+
+  @include mq(tablet, max) {
+    text-transform: none;
+  }
+}
+
+.highlights-grid-card-text {
+  font-size: 10rem;
+  font-weight: 500;
+  font-family: $ff-sans;
+  text-align: center;
+}

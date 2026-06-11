@@ -1,0 +1,31 @@
+@use "../index" as *;
+
+.corner-frame {
+  position: relative;
+  padding: 3rem 3.2rem 3.2rem;
+
+  @include mq(tablet, max) {
+    padding: 0 1rem;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 1.4rem;
+    pointer-events: none;
+
+    background:
+      linear-gradient($white, $white) left top / 0.1rem 1.4rem no-repeat,
+      linear-gradient($white, $white) left top / 1.4rem 0.1rem no-repeat,
+      linear-gradient($white, $white) right top / 0.1rem 1.4rem no-repeat,
+      linear-gradient($white, $white) right top / 1.4rem 0.1rem no-repeat,
+      linear-gradient($white, $white) left bottom / 0.1rem 1.4rem no-repeat,
+      linear-gradient($white, $white) left bottom / 1.4rem 0.1rem no-repeat,
+      linear-gradient($white, $white) right bottom / 0.1rem 1.4rem no-repeat,
+      linear-gradient($white, $white) right bottom / 1.4rem 0.1rem no-repeat;
+
+    @include mq(tablet, max) {
+      inset: -1rem;
+    }
+  }
+}

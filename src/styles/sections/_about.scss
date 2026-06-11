@@ -1,0 +1,136 @@
+@use "../index" as *;
+
+.about {
+  @include section-divider;
+
+  position: relative;
+
+  &::before {
+    @include glow(#1269da91, 34rem, 40rem);
+
+    top: -20%;
+    right: 10rem;
+  }
+}
+
+.about-layout {
+  @include flex(null, null, null, 4rem);
+
+  margin-top: 2rem;
+
+  @include mq(desktop, max) {
+    flex-direction: column;
+  }
+}
+
+.about-portrait,
+.about-supporting-figure {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 70rem;
+
+  @include mq(tablet, max) {
+    height: 40rem;
+  }
+}
+
+.about-portrait-image,
+.about-supporting-image {
+  @include media-cover;
+}
+
+.about-content {
+  @include flex-column(null, space-between);
+
+  @include mq(desktop, max) {
+    gap: 4rem;
+  }
+}
+
+.about-title {
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 4rem;
+  font-weight: 500;
+  line-height: 120%;
+
+  span {
+    color: $muted;
+  }
+}
+
+.about-facts {
+  position: relative;
+  width: 58rem;
+  height: fit-content;
+  padding: 8rem 1rem 4rem;
+  background-color: $white;
+
+  @include mq(desktop, between, wide) {
+    width: 44rem;
+  }
+
+  @include mq(desktop, max) {
+    padding: 10rem 2rem 2rem;
+  }
+
+  @include mq(tablet, max) {
+    width: auto;
+    margin-top: 6rem;
+    background-color: $accent;
+  }
+}
+
+.about-facts-list {
+  @include flex-column(1rem);
+}
+
+.about-facts-item {
+  @include flex(center, null, null, 0.6rem);
+
+  color: $black;
+  text-transform: uppercase;
+
+  p {
+    color: $black;
+
+    @include mq(tablet, max) {
+      color: $white;
+    }
+  }
+
+  @include mq(tablet, max) {
+    color: $white;
+  }
+}
+
+.about-facts-arrow {
+  position: absolute;
+  top: -25%;
+  right: 0;
+
+  rect {
+    fill: $accent;
+
+    @include mq(tablet, max) {
+      fill: $white;
+    }
+  }
+
+  path {
+    @include mq(tablet, max) {
+      fill: $black;
+    }
+  }
+
+  @include mq(desktop, max) {
+    top: -26%;
+    right: 5rem;
+  }
+
+  @include mq(tablet, max) {
+    top: -7rem;
+    right: 0;
+  }
+}

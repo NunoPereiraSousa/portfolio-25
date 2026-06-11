@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Dash, Plus } from "react-bootstrap-icons";
 
 type Props = {
   title: string;
-  date: string;
+  date: {
+    highlight?: string;
+    text: string;
+  };
   listElements: React.ReactElement;
 };
 
 export function ExpandableResume({ title, date, listElements }: Props) {
-  const [visibility, setVisibility] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const contentId = useId();
 
-  const toggleVisilibity = () => {
-    setVisibility(!visibility);
+  const toggleVisibility = () => {
+    setVisible((current) => !current);
   };
 
   return (
@@ -27,18 +31,25 @@ export function ExpandableResume({ title, date, listElements }: Props) {
         <p>
           <u>Date:</u>
         </p>
-        <p
-          className="expandable-resume-label"
-          dangerouslySetInnerHTML={{ __html: date }}
-        />
+        <p className="expandable-resume-label">
+          {date.highlight && <span>{date.highlight}</span>} {date.text}
+        </p>
       </div>
 
-      <button className="expandable-resume-button" onClick={toggleVisilibity}>
-        {!visibility ? <Plus size={20} /> : <Dash size={20} />} Expand info
+      <button
+        className="expandable-resume-button"
+        type="button"
+        aria-controls={contentId}
+        aria-expanded={visible}
+        onClick={toggleVisibility}
+      >
+        {!visible ? <Plus size={20} /> : <Dash size={20} />} Expand info
       </button>
 
-      {visibility && (
-        <div className="expandable-resume-list">{listElements}</div>
+      {visible && (
+        <div className="expandable-resume-list" id={contentId}>
+          {listElements}
+        </div>
       )}
     </div>
   );

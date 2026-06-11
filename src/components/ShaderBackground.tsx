@@ -7,20 +7,14 @@ type Props = {
   /** distance between vertical strings (px) */
   grid?: number;
 
+  /** distance between horizontal strings (px) */
+  rowGrid?: number;
+
   /** sample spacing along each string (px). higher = cheaper/smoother */
   step?: number;
 
-  /** how close the cursor must be to pluck a string (px) */
-  threshold?: number;
-
-  /** maximum bend (px) near the touch point */
-  maxAmp?: number;
-
   /** cap device pixel ratio for perf */
   dprCap?: number;
-
-  /** how wide the bend spreads around the touch point (0.10–0.30) */
-  touchWidth?: number;
 
   /** idle fps when nothing is ringing */
   idleFps?: number;
@@ -28,21 +22,16 @@ type Props = {
   /** line base alpha */
   baseAlpha?: number;
 
-  /** extra alpha when plucked */
-  glowAlpha?: number;
 };
 
 export function GuitarStringsCanvas({
   className = "guitar-canvas",
   grid = 44,
+  rowGrid = 120,
   step = 26,
-  threshold = 12,
-  maxAmp = 18,
   dprCap = 1.5,
-  touchWidth = 0.16,
   idleFps = 15,
   baseAlpha = 0.08,
-  glowAlpha = 0.12,
 }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
@@ -58,18 +47,6 @@ export function GuitarStringsCanvas({
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // ======= TUNE THESE =======
-    const DECAY = 2.1; // lower = longer ring
-    const ATTACK = 7.0; // lower = softer ease-in
-    const OMEGA = 16.0; // oscillation speed
-    const COOLDOWN_MS = 120;
-    const MAX_IMP = 2;
-
-    // Soft edge damping: set EDGE_MIN to 1.0 for no damping at edges
-    const EDGE_MIN = 0.55; // 0.4..1.0
-    const EDGE_FADE = 0.08; // how much of the top/bottom fades (0.05..0.12)
-    // ==========================
-
     let w = 0,
       h = 0,
       dpr = 1;
@@ -78,19 +55,12 @@ export function GuitarStringsCanvas({
     let idleTimer: number | null = null;
     let running = true;
 
-    const start = performance.now();
-
-    type Imp = { t0: number; A: number; dir: number; y0: number };
-    const impulses = new Map<number, Imp[]>();
-    const lastHit = new Map<string, number>();
-
-    const mouse = {
-      x: -9999,
-      y: -9999,
-      prevX: -9999,
-      vx: 0,
-      lx: 0,
-      lt: 0,
+    const focus = {
+      x: 0,
+      y: 0,
+      tx: 0,
+      ty: 0,
+      hasPointer: false,
     };
 
     const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
@@ -100,36 +70,14 @@ export function GuitarStringsCanvas({
       return t * t * (3 - 2 * t);
     };
 
-    const envelope = (age: number) =>
-      (1 - Math.exp(-ATTACK * age)) * Math.exp(-DECAY * age);
-
-    const canHit = (key: string) => {
-      const now = performance.now();
-      const last = lastHit.get(key) || 0;
-      if (now - last < COOLDOWN_MS) return false;
-      lastHit.set(key, now);
-      return true;
-    };
-
-    const addImpulse = (xLine: number, imp: Imp) => {
-      const arr = impulses.get(xLine) || [];
-      arr.unshift(imp);
-      if (arr.length > MAX_IMP) arr.length = MAX_IMP;
-      impulses.set(xLine, arr);
-    };
-
-    const cleanup = (t: number) => {
-      for (const [x, arr] of impulses.entries()) {
-        const next = arr.filter((i) => t - i.t0 < 1.6);
-        if (next.length) impulses.set(x, next);
-        else impulses.delete(x);
-      }
-    };
-
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, dprCap);
       w = window.innerWidth;
       h = window.innerHeight;
+      focus.x = w / 2;
+      focus.y = h / 2;
+      focus.tx = w / 2;
+      focus.ty = h / 2;
 
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
@@ -143,18 +91,10 @@ export function GuitarStringsCanvas({
     };
 
     const onMove = (e: PointerEvent) => {
-      const now = performance.now();
-      const dt = Math.max(0.001, (now - mouse.lt) / 1000);
-      const nx = e.clientX;
-
-      mouse.vx = (nx - mouse.lx) / dt;
-
-      mouse.prevX = mouse.x;
-      mouse.x = nx;
-      mouse.y = e.clientY;
-
-      mouse.lx = nx;
-      mouse.lt = now;
+      focus.tx = e.clientX;
+      focus.ty = e.clientY;
+      focus.hasPointer = true;
+      if (running) scheduleNext(true);
     };
 
     const onVisibility = () => {
@@ -180,108 +120,134 @@ export function GuitarStringsCanvas({
       ctx.stroke();
     };
 
-    const drawVerticalLine = (xLine: number, t: number) => {
-      const arr = impulses.get(xLine);
+    const getMeshMetrics = () => ({
+      cx: w / 2,
+      cy: h / 2,
+      radius: Math.min(w, h) * 0.34,
+      columnCount: Math.floor(w / grid) + 1,
+      rowCount: Math.floor(h / rowGrid) + 1,
+    });
 
-      // glow based on strongest active impulse
-      let hit = 0;
-      if (arr) {
-        for (const imp of arr) {
-          hit = Math.max(hit, envelope(Math.max(0, t - imp.t0)));
-        }
-      }
+    const idleDistortion = { depth: 0, ripple: 0, age: 99 };
 
-      const alpha = baseAlpha + glowAlpha * hit;
-      ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+    const getDistortionCenter = (impact: typeof idleDistortion) => {
+      const pointerBlend = focus.hasPointer ? 0.72 : 0;
+      const impactBlend = Math.max(0, 1 - smoothstep(0.65, 1.35, impact.age));
+      const pointerWeight = pointerBlend * (1 - impactBlend * 0.65);
+      const centerWeight = 1 - pointerWeight;
+
+      return {
+        x: focus.x * pointerWeight + (w / 2) * centerWeight,
+        y: focus.y * pointerWeight + (h / 2) * centerWeight,
+        pointerWeight,
+      };
+    };
+
+    const projectMeshPoint = (
+      u01: number,
+      v: number,
+      impact: typeof idleDistortion,
+    ) => {
+      const mesh = getMeshMetrics();
+      const center = getDistortionCenter(impact);
+      const x = u01 * w;
+      const y = v * h;
+      const dx = x - center.x;
+      const dy = y - center.y;
+      const dist = Math.hypot(dx, dy);
+      const influence = Math.exp(-Math.pow(dist / mesh.radius, 2.15));
+      const pocket = Math.pow(influence, 1.18);
+      const rim = Math.exp(
+        -Math.pow((dist - mesh.radius * 0.72) / (mesh.radius * 0.2), 2),
+      );
+      const waveCenter = Math.min(1.15, impact.age * 1.4);
+      const normalizedDist = dist / mesh.radius;
+      const rippleBand = Math.exp(
+        -Math.pow((normalizedDist - waveCenter) / 0.16, 2),
+      );
+      const ripplePush = rippleBand * impact.ripple * mesh.radius * 0.035;
+      const pointerDepth = center.pointerWeight * 0.34;
+      const totalDepth = Math.max(
+        impact.depth,
+        pointerDepth,
+      );
+      const depthScale = 1 - pocket * 0.46 * totalDepth + rim * 0.06 * totalDepth;
+      const verticalScale =
+        1 - pocket * 0.36 * totalDepth + rim * 0.05 * totalDepth;
+      const sag = pocket * mesh.radius * 0.38 * totalDepth;
+      const bottomTension =
+        Math.max(0, dy / mesh.radius) * pocket * mesh.radius * 0.18 * totalDepth;
+
+      return {
+        x: center.x + dx * depthScale + (dx / Math.max(dist, 0.001)) * ripplePush,
+        y:
+          center.y +
+          dy * verticalScale +
+          sag +
+          bottomTension +
+          (dy / Math.max(dist, 0.001)) * ripplePush,
+      };
+    };
+
+    const drawVerticalLine = (
+      lineIndex: number,
+      lineCount: number,
+      impact: typeof idleDistortion,
+    ) => {
+      ctx.strokeStyle = `rgba(255,255,255,${baseAlpha})`;
 
       const pts: { x: number; y: number }[] = [];
+      const u01 = lineCount <= 1 ? 0.5 : lineIndex / (lineCount - 1);
 
-      for (let y = 0; y <= h; y += step) {
-        const yn = y / h;
-
-        // Soft edge damping (optional)
-        const edge =
-          EDGE_MIN +
-          (1 - EDGE_MIN) *
-            (smoothstep(0.0, EDGE_FADE, yn) *
-              smoothstep(0.0, EDGE_FADE, 1.0 - yn));
-
-        let ox = 0;
-
-        if (arr) {
-          for (const imp of arr) {
-            const age = Math.max(0, t - imp.t0);
-            const env = envelope(age);
-
-            // ✅ Key: bend centered at touch y0 (works at top/bottom too)
-            const local = Math.exp(-Math.pow((yn - imp.y0) / touchWidth, 2));
-
-            // time oscillation (+ tiny harmonic)
-            const w1 = Math.sin(OMEGA * age);
-            const w2 = 0.22 * Math.sin(OMEGA * 2.02 * age + 0.6);
-
-            const shape = local * edge;
-
-            ox += imp.dir * imp.A * shape * (w1 + w2) * env;
-          }
-        }
-
-        pts.push({ x: xLine + ox, y });
+      for (let v = 0; v <= 1; v += step / Math.max(1, h)) {
+        const point = projectMeshPoint(u01, v, impact);
+        pts.push(point);
       }
 
       strokeSmooth(pts);
     };
 
-    const maybePluck = (t: number) => {
-      // require some movement so it feels like you "hit" the string
-      const speed = Math.abs(mouse.vx);
-      if (speed < 70) return;
+    const drawHorizontalLine = (
+      rowIndex: number,
+      rowCount: number,
+      impact: typeof idleDistortion,
+    ) => {
+      ctx.strokeStyle = `rgba(255,255,255,${baseAlpha * 0.62})`;
 
-      const xLine = Math.round(mouse.x / grid) * grid;
-      const dx = Math.abs(mouse.x - xLine);
+      const pts: { x: number; y: number }[] = [];
+      const v = rowCount <= 1 ? 0.5 : rowIndex / (rowCount - 1);
 
-      // pluck only when crossing the line
-      const crossed =
-        (mouse.prevX < xLine && mouse.x >= xLine) ||
-        (mouse.prevX > xLine && mouse.x <= xLine);
-
-      if (!crossed) return;
-
-      // amplitude depends on speed + proximity
-      const proximity = 1 - Math.min(1, dx / threshold);
-      const baseAmp = Math.min(maxAmp, Math.max(2.0, (speed / 2000) * maxAmp));
-      const amp = baseAmp * (0.35 + 0.65 * proximity);
-
-      if (dx <= threshold) {
-        const key = `v:${xLine}`;
-        if (canHit(key)) {
-          const y0 = clamp01(mouse.y / h);
-          addImpulse(xLine, {
-            t0: t,
-            A: amp,
-            dir: mouse.vx >= 0 ? 1 : -1,
-            y0,
-          });
-        }
+      for (let u = 0; u <= 1; u += step / Math.max(1, w)) {
+        pts.push(projectMeshPoint(u, v, impact));
       }
+
+      strokeSmooth(pts);
     };
 
     const renderFrame = () => {
       if (!running) return;
 
-      const t = (performance.now() - start) / 1000;
-
       ctx.clearRect(0, 0, w, h);
 
-      maybePluck(t);
+      const mesh = getMeshMetrics();
+      const totalLines = mesh.columnCount;
+      const totalRows = mesh.rowCount;
+      const impact = idleDistortion;
+      focus.x += (focus.tx - focus.x) * 0.08;
+      focus.y += (focus.ty - focus.y) * 0.08;
 
-      for (let x = 0; x <= w; x += grid) {
-        drawVerticalLine(x, t);
+      const focusActive =
+        Math.abs(focus.tx - focus.x) + Math.abs(focus.ty - focus.y) > 0.5;
+
+      for (let index = 0; index < totalLines; index += 1) {
+        drawVerticalLine(index, totalLines, impact);
       }
 
-      cleanup(t);
+      for (let index = 0; index < totalRows; index += 1) {
+        drawHorizontalLine(index, totalRows, impact);
+      }
 
-      scheduleNext(impulses.size > 0);
+      scheduleNext(focusActive);
     };
 
     const scheduleNext = (fast: boolean) => {
@@ -317,14 +283,11 @@ export function GuitarStringsCanvas({
     };
   }, [
     grid,
+    rowGrid,
     step,
-    threshold,
-    maxAmp,
     dprCap,
-    touchWidth,
     idleFps,
     baseAlpha,
-    glowAlpha,
   ]);
 
   return <canvas ref={ref} className={className} />;

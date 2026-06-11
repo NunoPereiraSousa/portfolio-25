@@ -1,0 +1,89 @@
+@use "../index" as *;
+
+.resume {
+  @include section-divider(false);
+  position: relative;
+
+  @include mq(desktop, max) {
+    border-bottom: none;
+  }
+
+  &::before {
+    @include glow($accent, 54rem, 28rem, 18rem, 0.2);
+
+    bottom: 30rem;
+    right: 20rem;
+  }
+
+  &::after {
+    @include glow(#1269da, 54rem, 28rem, 18rem, 0.4);
+
+    top: 30rem;
+    right: 0;
+  }
+
+  .section-header__text--large {
+    @include mq(tablet, max) {
+      font-size: 1.6rem !important;
+    }
+  }
+}
+
+.resume-grid {
+  @include grid(1fr 1fr, 8rem, start);
+
+  @include mq(desktop, max) {
+    gap: 4rem;
+  }
+
+  @include mq(tablet, max) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.resume-sticky {
+  position: sticky;
+  top: 10rem;
+  height: fit-content;
+  align-self: start;
+
+  @include mq(desktop, max) {
+    top: 6rem;
+  }
+
+  @include mq(tablet, max) {
+    position: static;
+  }
+}
+
+.resume-mark {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.resume-list {
+  @include flex-column(5rem);
+}
+
+.resume-list-item {
+  @include flex-column(2rem);
+
+  text-transform: uppercase;
+
+  &:first-child .section-header {
+    @include mq(tablet, max) {
+      display: none;
+    }
+  }
+}
+
+.resume-list-item-list {
+  @include flex-column(4rem);
+}
+
+.awards-list {
+  @include flex-column(1rem);
+}

@@ -2,10 +2,10 @@
 "use client";
 
 import * as THREE from "three";
-import React, { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
-import gsap from "gsap";
+import { gsap } from "../lib/animation/gsap";
 
 type Props = {
   src: string;
@@ -27,20 +27,19 @@ function WavyPlane({
   const hoverQuickToRef = useRef<((v: number) => void) | null>(null);
 
   const mouseRef = useRef(new THREE.Vector2(0.5, 0.5));
-  const [hovered, setHovered] = useState(false);
 
-  const tex = useTexture(src);
-
-  // ✅ correct texture color space
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.minFilter = THREE.LinearFilter;
-  tex.magFilter = THREE.LinearFilter;
-  tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+  const tex = useTexture(src, (texture) => {
+    const loadedTexture = Array.isArray(texture) ? texture[0] : texture;
+    loadedTexture.colorSpace = THREE.SRGBColorSpace;
+    loadedTexture.minFilter = THREE.LinearFilter;
+    loadedTexture.magFilter = THREE.LinearFilter;
+    loadedTexture.wrapS = loadedTexture.wrapT = THREE.ClampToEdgeWrapping;
+  });
 
   const material = useMemo(() => {
     const m = new THREE.ShaderMaterial({
       transparent: true,
-      // ✅ avoids unexpected tone mapping influence
+      // Avoids unexpected tone mapping influence
       toneMapped: false,
       uniforms: {
         uTex: { value: tex },
@@ -90,7 +89,7 @@ function WavyPlane({
   }, [tex, strength, frequency, speed]);
 
   // Create GSAP "quickTo" once when material exists
-  React.useEffect(() => {
+  useEffect(() => {
     const m = matRef.current;
     if (!m) return;
 
@@ -119,13 +118,11 @@ function WavyPlane({
   };
 
   const onOver = () => {
-    setHovered(true);
     hoverQuickToRef.current?.(1);
   };
 
   const onOut = () => {
-    setHovered(false);
-    hoverQuickToRef.current?.(0); // ✅ smooth ease-out
+    hoverQuickToRef.current?.(0); // smooth ease-out
   };
 
   return (
@@ -155,7 +152,7 @@ export function WavyImage({
           powerPreference: "low-power",
         }}
         onCreated={({ gl }) => {
-          // ✅ correct renderer output colors
+          // Correct renderer output colors
           gl.outputColorSpace = THREE.SRGBColorSpace;
           gl.toneMapping = THREE.NoToneMapping;
         }}

@@ -50,3 +50,89 @@
     outline-offset: 3px;
   }
 }
+
+@mixin flex($align: null, $justify: null, $direction: null, $gap: null) {
+  display: flex;
+
+  @if $align != null {
+    align-items: $align;
+  }
+
+  @if $justify != null {
+    justify-content: $justify;
+  }
+
+  @if $direction != null {
+    flex-direction: $direction;
+  }
+
+  @if $gap != null {
+    gap: $gap;
+  }
+}
+
+@mixin flex-column($gap: null, $justify: null, $align: null) {
+  @include flex($align, $justify, column, $gap);
+}
+
+@mixin grid($columns: null, $gap: null, $align: null, $justify: null) {
+  display: grid;
+
+  @if $columns != null {
+    grid-template-columns: $columns;
+  }
+
+  @if $gap != null {
+    gap: $gap;
+  }
+
+  @if $align != null {
+    align-items: $align;
+  }
+
+  @if $justify != null {
+    justify-items: $justify;
+  }
+}
+
+@mixin absolute-fill {
+  position: absolute;
+  inset: 0;
+}
+
+@mixin media-cover {
+  @include absolute-fill;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@mixin dot($size: 0.8rem, $color: $accent) {
+  display: block;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  background-color: $color;
+}
+
+@mixin section-divider($mobile: true) {
+  border-bottom: 1px solid $panel;
+  padding-bottom: 6rem;
+
+  @if $mobile == true {
+    @include mq(desktop, max) {
+      border-bottom: 1px solid rgba($white, 0.3);
+    }
+  }
+}
+
+@mixin glow($color, $width, $height, $blur: 18rem, $opacity: 1) {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: $width;
+  height: $height;
+  background-color: $color;
+  filter: blur($blur);
+  opacity: $opacity;
+}

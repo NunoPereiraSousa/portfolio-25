@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
+import { featureFlags } from "@/config/featureFlags";
 
 type WeatherState = {
   label: string;
   tempC?: number;
   isLoading: boolean;
   error?: string;
+};
+
+type WeatherResponse = {
+  current_weather?: {
+    temperature?: number;
+    weathercode?: number;
+  };
 };
 
 function weatherCodeToLabel(code: number): string {
@@ -21,44 +29,53 @@ function weatherCodeToLabel(code: number): string {
   return "unknown";
 }
 
-async function geocodeCity(name: string) {
-  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-    name,
-  )}&count=1&language=en&format=json`;
+const knownWeatherLocations = {
+  porto: { lat: 41.1496, lon: -8.6109 },
+  oporto: { lat: 41.1496, lon: -8.6109 },
+} as const;
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to geocode city");
-  const data = await res.json();
+function getWeatherLocation(cityKey: string) {
+  return knownWeatherLocations[
+    cityKey as keyof typeof knownWeatherLocations
+  ] ?? knownWeatherLocations.porto;
+}
 
-  const first = data?.results?.[0];
-  if (!first) throw new Error("City not found");
+async function fetchWithTimeout(url: string, timeoutMs: number) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
 
-  return { lat: first.latitude as number, lon: first.longitude as number };
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 }
 
 async function fetchCurrentWeather(lat: number, lon: number) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=Europe%2FLisbon`;
-  const res = await fetch(url);
+  const res = await fetchWithTimeout(url, 3500);
   if (!res.ok) throw new Error("Failed to fetch weather");
-  return res.json();
+  return (await res.json()) as WeatherResponse;
 }
 
 export function useWeatherLabel(city = "Porto") {
   const [state, setState] = useState<WeatherState>({
-    label: "…",
-    isLoading: true,
+    label: featureFlags.weather ? "..." : "unknown",
+    isLoading: featureFlags.weather,
   });
 
   const cityKey = useMemo(() => city.trim().toLowerCase(), [city]);
 
   useEffect(() => {
+    if (!featureFlags.weather) return;
+
     let alive = true;
 
     async function run() {
       try {
-        setState({ label: "…", isLoading: true });
+        setState({ label: "...", isLoading: true });
 
-        const { lat, lon } = await geocodeCity(cityKey);
+        const { lat, lon } = getWeatherLocation(cityKey);
         const data = await fetchCurrentWeather(lat, lon);
 
         const cw = data?.current_weather;
@@ -73,12 +90,15 @@ export function useWeatherLabel(city = "Porto") {
 
         if (!alive) return;
         setState({ label, tempC, isLoading: false });
-      } catch (e: any) {
+      } catch (error: unknown) {
         if (!alive) return;
+        const message =
+          error instanceof Error ? error.message : "Weather error";
+
         setState({
           label: "unknown",
           isLoading: false,
-          error: e?.message ?? "Weather error",
+          error: message,
         });
       }
     }
