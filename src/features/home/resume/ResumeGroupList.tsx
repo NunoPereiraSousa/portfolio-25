@@ -10,7 +10,10 @@ export function ResumeGroupList({ groups }: ResumeGroupListProps) {
   return (
     <>
       {groups.map((group) => (
-        <div className="resume-list-item" key={group.id}>
+        <div
+          className={`resume-list-item resume-list-item--${group.id}`}
+          key={group.id}
+        >
           <SectionHeader text={group.title} variation="large" />
 
           <div className="awards-list">
