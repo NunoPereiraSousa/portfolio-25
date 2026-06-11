@@ -25,14 +25,6 @@ export function MobileBackgroundLines() {
         <span></span>
         <span></span>
       </div>
-      <div className="webgl-mobile-lines__horizontal" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
     </div>
   );
 }
