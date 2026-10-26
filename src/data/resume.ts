@@ -28,64 +28,59 @@ export type ResumeGroup = {
 export const resumeRoles = [
   {
     id: "software-engineer-carbmee",
-    title: "Software Engineer, carbmee",
+    title: "Software Engineer, carbmee | Compliance & Risk Automation",
     date: {
       highlight: "Promoted",
       text: "March 2025 - Present, Remote",
     },
     bullets: [
-      "Own customer-facing features from discovery and technical design through implementation, release, and iteration within a global enterprise SaaS platform.",
-      "Own end-to-end development of sales demonstration features used by commercial teams to support enterprise opportunities valued above EUR100k.",
-      "Deliver data-intensive workflows handling imports of 1-10 million rows, maintaining responsive user experiences through server-driven pagination, caching, debounced filtering, and virtualization.",
-      "Design and implement API extensions, validation logic, and PostgreSQL schema migrations supporting new product capabilities across frontend and backend systems.",
-      "Partner with Product, Design, and Engineering stakeholders to define requirements, evaluate trade-offs, and deliver scalable solutions for complex customer workflows.",
-      "Collaborate with commercial teams to rapidly prototype and validate product concepts for enterprise prospects.",
+      "Proposed and secured Product approval to limit the Data Collection Framework's first release to Greenhouse-gas Items, then led engineering refinement and end-to-end delivery of configurable supplier questionnaires; adopted by 30 customers across 6,000 submissions.",
+      "Led product and engineering refinement of the EU Deforestation Regulation (EUDR) supplier questionnaire from UI to APIs, cutting median completion time by 30%; the feature supported €600k in signed contracts.",
+      "Built questionnaire submissions that detect conflicting edits, handle repeated requests safely and commit GHG record changes with audit history; added automated tests for failure cases.",
+      "Cut supplier-data API p95 latency 65% (1.8s to 630ms) and Node.js peak heap 70% (1.5GB to 450MB) on 2M+ rows by moving pagination, sorting and aggregation into PostgreSQL.",
+      "Built candidate detection for the Packaging and Packaging Waste Regulation (PPWR), processing 2M+ GHG items with configurable exclusion rules and preserving customer review decisions across scheduled runs; reduced review time by 40%.",
+      "Standardized custom-property forms, columns and filtering across seven entity areas, cutting development time for subsequent configurable workflows by 35% (4 to 2.6 days).",
     ],
   },
   {
     id: "junior-software-engineer-carbmee",
     title: "Junior Software Engineer, carbmee",
     date: {
-      text: "February 2024 - March 2025",
+      text: "February 2024 - March 2025, Remote",
     },
     bullets: [
-      "Delivered customer-facing features and workflow improvements using React and TypeScript within an enterprise B2B SaaS platform.",
-      "Implemented UI enhancements focused on responsiveness, accessibility, and usability across complex product experiences.",
-      "Supported end-to-end feature delivery through API integrations, PostgreSQL schema changes, and resolution of cross-system edge cases.",
-      "Collaborated closely with senior engineers, Product, and Design teams to translate requirements into production-ready solutions.",
+      "Built FusionAuth authentication screens and email templates, alongside role-based permissions spanning React interfaces, REST APIs, database models and authorization guards.",
     ],
   },
   {
     id: "programming-university-teacher",
     title: "Programming University Teacher, School of Media Arts and Design",
     date: {
-      text: "October 2023 - February 2024 / January 2025 - March 2025",
+      text: "October 2023 - February 2024 / January 2025 - March 2025, Porto, Portugal",
     },
     bullets: [
-      "Taught web programming to 100+ students across JavaScript, HTML, CSS, Git, and Bootstrap.",
-      "Designed curriculum, assessments, lectures, and practical exercises to help students build production-oriented web fundamentals.",
+      "Taught web programming to 100+ students, covering JavaScript, HTML, CSS and Git, while developing practical assignments, assessments and learning materials.",
     ],
   },
   {
     id: "frontend-developer-web-master-carbmee",
-    title: "Frontend Developer & Web Master, carbmee",
+    title: "Freelance Web Engineer, carbmee",
     date: {
-      text: "June 2021 - February 2024",
+      text: "June 2021 - February 2024, Remote",
     },
     bullets: [
-      "Built and maintained the public website, improving performance, UX, and SEO while shipping campaign landing pages with marketing.",
-      "Integrated HubSpot workflows, analytics, SEMrush audit findings, and CMS-driven content management processes used across multiple regions.",
+      "Developed and maintained carbmee's public website, serving 10,000+ monthly visitors, delivering campaign landing pages, HubSpot/CMS integrations, and UX, performance and SEO improvements.",
     ],
   },
   {
     id: "frontend-developer-ui-designer-freelancer",
-    title: "Freelance Front-end Developer & UI Designer",
+    title: "Freelance Frontend Developer & UI Designer",
     date: {
-      text: "June 2021 - October 2023",
+      text: "June 2021 - October 2023, Remote",
     },
     bullets: [
-      "Designed and developed award-winning websites for international clients, including the British Government, across public sector, technology, and commercial industries.",
-      "Combined UI design and frontend development to deliver polished, responsive websites from concept to launch.",
+      "Delivered frontend development and UI/UX design projects for 30+ companies and 80+ additional individual and organizational clients, including a project for the UK government.",
+      "Created responsive websites for international public-sector, technology and commercial clients, earning recognition from Awwwards and CSS Design Awards.",
     ],
   },
 ] satisfies ResumeRole[];
@@ -116,6 +111,7 @@ export const resumeGroups = [
       "TypeScript",
       "JavaScript",
       "Next.js",
+      "Server-side rendering (SSR)",
       "TanStack Query",
       "Redux",
       "Tailwind CSS",
@@ -140,6 +136,7 @@ export const resumeGroups = [
     id: "testing",
     title: "Testing",
     items: [
+      "Unit / integration testing",
       "Jest",
       "React Testing Library",
       "Playwright",
@@ -152,10 +149,16 @@ export const resumeGroups = [
     items: [
       "Node.js",
       "NestJS",
+      "MikroORM",
       "PostgreSQL/SQL",
+      "SQL / CTEs",
       "SQL migrations",
+      "Transactions",
+      "Idempotency",
       "REST APIs",
       "DTO validation",
+      "Queues",
+      "Audit logging",
     ],
   },
   {
@@ -163,6 +166,7 @@ export const resumeGroups = [
     title: "Auth / Monitoring",
     items: [
       "FusionAuth",
+      "Authorization",
       "AWS CloudWatch",
     ],
   },
@@ -198,7 +202,7 @@ export const educationItems = [
   {
     id: "msc-communication-web-technologies",
     topText:
-      "MSc, Communication and Web Technologies - University of Aveiro, 2021-2023 (Aveiro)",
+      "MSc, Communication and Web Technologies - University of Aveiro, October 2021 - January 2024 (Aveiro)",
     bottomText: {
       highlight: "GPA: 4.5 / 5.",
       text: "Top 1% of students ranking.",
@@ -207,7 +211,7 @@ export const educationItems = [
   {
     id: "bsc-web-information-systems-technologies",
     topText:
-      "BSc, Web Information Systems and Technologies - School of Media Arts and Design, 2018-2021 (Porto)",
+      "BSc, Web Information Systems and Technologies - School of Media Arts and Design, October 2018 - July 2021 (Porto)",
     bottomText: {
       highlight: "Valedictorian student award.",
       text: "GPA: 4.5 / 5. Student with the highest GPA (top 1%)",

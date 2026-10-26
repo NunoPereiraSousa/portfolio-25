@@ -17,8 +17,8 @@ export const highlightsContent = {
       value: "5y+",
     },
     {
-      label: "Insanely happy clients",
-      value: "80+",
+      label: "Companies served, plus 80+ additional clients",
+      value: "30+",
     },
   ] satisfies HighlightMetric[],
 };

@@ -5,9 +5,9 @@ export const heroContent = {
   infoTitle: "Pixel Perfect Chef",
   infoSup: "ns",
   facts: [
-    "No glasses, just an eagle eye and pianist hands.",
+    "Full Stack Software Engineer with an eagle eye and pianist hands.",
     'I hit the right keyboard "notes" and cook interfaces that feel just right.',
-    "And I don't just season the front-end. I cook on the back-end too.",
+    "I cook up B2B SaaS with React, TypeScript, NestJS and PostgreSQL, from the interface to the data behind it.",
   ],
 };
 
