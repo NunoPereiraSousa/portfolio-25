@@ -34,8 +34,8 @@ export const resumeRoles = [
       text: "March 2025 - Present, Remote",
     },
     bullets: [
-      "Proposed and secured Product approval to limit the Data Collection Framework's first release to Greenhouse-gas Items, then led engineering refinement and end-to-end delivery of configurable supplier questionnaires; adopted by 30 customers across 6,000 submissions.",
-      "Led product and engineering refinement of the EU Deforestation Regulation (EUDR) supplier questionnaire from UI to APIs, cutting median completion time by 30%; the feature supported €600k in signed contracts.",
+      "Proposed and secured Product approval to limit the Data Collection Framework's first release to Greenhouse-gas Items, then led engineering refinement and end-to-end delivery of configurable supplier questionnaires.",
+      "Led product and engineering refinement of the EU Deforestation Regulation (EUDR) supplier questionnaire from UI to APIs, cutting median completion time by 30%.",
       "Built questionnaire submissions that detect conflicting edits, handle repeated requests safely and commit GHG record changes with audit history; added automated tests for failure cases.",
       "Cut supplier-data API p95 latency 65% (1.8s to 630ms) and Node.js peak heap 70% (1.5GB to 450MB) on 2M+ rows by moving pagination, sorting and aggregation into PostgreSQL.",
       "Built candidate detection for the Packaging and Packaging Waste Regulation (PPWR), processing 2M+ GHG items with configurable exclusion rules and preserving customer review decisions across scheduled runs; reduced review time by 40%.",
