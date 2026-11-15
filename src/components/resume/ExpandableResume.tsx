@@ -7,10 +7,11 @@ type Props = {
     highlight?: string;
     text: string;
   };
+  tags: readonly string[];
   listElements: React.ReactElement;
 };
 
-export function ExpandableResume({ title, date, listElements }: Props) {
+export function ExpandableResume({ title, date, tags, listElements }: Props) {
   const [visible, setVisible] = useState(false);
   const contentId = useId();
 
@@ -34,6 +35,18 @@ export function ExpandableResume({ title, date, listElements }: Props) {
         <p className="expandable-resume-label">
           {date.highlight && <span>{date.highlight}</span>} {date.text}
         </p>
+      </div>
+      <div className="expandable-resume-label">
+        <p data-split="lines">
+          <u>Tech:</u>
+        </p>
+        <ul className="expandable-resume-tags" aria-label="Tech" role="list">
+          {tags.map((tag) => (
+            <li className="expandable-resume-nugget" key={tag}>
+              {tag}
+            </li>
+          ))}
+        </ul>
       </div>
 
       <button

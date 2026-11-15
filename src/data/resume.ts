@@ -5,6 +5,7 @@ export type ResumeRole = {
     highlight?: string;
     text: string;
   };
+  tags: string[];
   bullets: string[];
 };
 
@@ -33,6 +34,15 @@ export const resumeRoles = [
       highlight: "Promoted",
       text: "March 2025 - Present, Remote",
     },
+    tags: [
+      "React",
+      "TypeScript",
+      "NestJS",
+      "PostgreSQL",
+      "Storybook",
+      "AWS",
+      "Tailwind CSS",
+    ],
     bullets: [
       "Proposed and secured Product approval to limit the Data Collection Framework's first release to Greenhouse-gas Items, then led engineering refinement and end-to-end delivery of configurable supplier questionnaires.",
       "Led product and engineering refinement of the EU Deforestation Regulation (EUDR) supplier questionnaire from UI to APIs, cutting median completion time by 30%.",
@@ -48,6 +58,7 @@ export const resumeRoles = [
     date: {
       text: "February 2024 - March 2025, Remote",
     },
+    tags: ["React", "Tailwind CSS", "FusionAuth", "REST APIs"],
     bullets: [
       "Built FusionAuth authentication screens and email templates, alongside role-based permissions spanning React interfaces, REST APIs, database models and authorization guards.",
     ],
@@ -58,6 +69,7 @@ export const resumeRoles = [
     date: {
       text: "October 2023 - February 2024 / January 2025 - March 2025, Porto, Portugal",
     },
+    tags: ["JavaScript", "HTML", "CSS", "Git"],
     bullets: [
       "Taught web programming to 100+ students, covering JavaScript, HTML, CSS and Git, while developing practical assignments, assessments and learning materials.",
     ],
@@ -68,6 +80,7 @@ export const resumeRoles = [
     date: {
       text: "June 2021 - February 2024, Remote",
     },
+    tags: ["CMS", "HubSpot", "SEO", "Web Performance"],
     bullets: [
       "Developed and maintained carbmee's public website, serving 10,000+ monthly visitors, delivering campaign landing pages, HubSpot/CMS integrations, and UX, performance and SEO improvements.",
     ],
@@ -78,6 +91,7 @@ export const resumeRoles = [
     date: {
       text: "June 2021 - October 2023, Remote",
     },
+    tags: ["Frontend Development", "UI/UX Design", "Responsive Design"],
     bullets: [
       "Delivered frontend development and UI/UX design projects for 30+ companies and 80+ additional individual and organizational clients, including a project for the UK government.",
       "Created responsive websites for international public-sector, technology and commercial clients, earning recognition from Awwwards and CSS Design Awards.",

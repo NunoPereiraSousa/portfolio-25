@@ -8,6 +8,8 @@
 .expandable-resume-label {
   @include flex(center, null, null, 1rem);
 
+  display: block;
+
   u {
     color: $muted;
   }
@@ -15,6 +17,31 @@
   span {
     color: $accent;
   }
+}
+
+.expandable-resume-label + .expandable-resume-label {
+  margin-top: 1rem;
+}
+
+.expandable-resume-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.expandable-resume-nugget {
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba($accent, 0.2);
+  border-radius: 999px;
+  background-color: rgba($accent, 0.2);
+  color: $white;
+  font-size: $fs-14;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
 .expandable-resume-button {

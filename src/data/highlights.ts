@@ -6,18 +6,18 @@ export type HighlightMetric = {
 export const highlightsContent = {
   title: "Some meaningful numbers",
   label:
-    "This is the part where I let the receipts talk. Time in the lab, time on the keys, and the exact amount of sugar that makes the cake hit.",
+    "I've worked on everything from award-winning websites to complex SaaS products. Here are a few numbers from along the way.",
   metrics: [
     {
-      label: "International awards and recognitions",
+      label: "International design awards and recognitions",
       value: "10+",
     },
     {
-      label: "Teaching and crafting digital experiences",
-      value: "5y+",
+      label: "Data rows handled in production SaaS workflows",
+      value: "10M+",
     },
     {
-      label: "Companies served, plus 80+ additional clients",
+      label: "Companies I've worked with worldwide",
       value: "30+",
     },
   ] satisfies HighlightMetric[],

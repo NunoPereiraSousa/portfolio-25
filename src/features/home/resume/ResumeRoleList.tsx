@@ -12,6 +12,7 @@ export function ResumeRoleList({ roles }: ResumeRoleListProps) {
         <ExpandableResume
           title={role.title}
           date={role.date}
+          tags={role.tags}
           key={role.id}
           listElements={
             <ul>

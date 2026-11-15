@@ -59,9 +59,7 @@ export function HeroSection() {
 
         <div className="hero-info-right corner-frame">
           <h3 className="hero-info-right-header">
-            How <span>"</span>
-            {heroContent.infoTitle} <sup>{heroContent.infoSup}</sup>
-            <span>"</span> became my thing.
+            NUNO SOUSA • FRONTEND & PRODUCT ENGINEER
           </h3>
 
           <ul className="hero-info-right-list">

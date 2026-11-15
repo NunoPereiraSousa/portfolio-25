@@ -5,9 +5,12 @@ export const heroContent = {
   infoTitle: "Pixel Perfect Chef",
   infoSup: "ns",
   facts: [
-    "Full Stack Software Engineer with an eagle eye and pianist hands.",
-    'I hit the right keyboard "notes" and cook interfaces that feel just right.',
-    "I cook up B2B SaaS with React, TypeScript, NestJS and PostgreSQL, from the interface to the data behind it.",
+    // "Give me a blank canvas or a messy product problem. I'm at my best turning both into something that looks simple, even when what's behind it isn't.",
+    // 'I don\'t just build what\'s in the ticket. I question ideas, shape features and take ownership all the way to production.',
+    // "I'm obsessed with the details, from how an interface looks and feels to the engineering that makes it all work.",
+    "Blank canvas or messy product? I make the complex feel simple.",
+    'I challenge ideas, shape features and own the build from start to finish.',
+    "I'm obsessed with the details, from how an interface looks and feels to the engineering that makes it all work.",
   ],
 };
 
